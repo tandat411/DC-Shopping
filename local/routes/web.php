@@ -1,0 +1,225 @@
+<?php
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
+|
+*/
+
+Route::get('/', function () {
+    return view('index');
+});
+
+Route::get('user-login', function () {
+    return view('login');
+});
+
+Route::get('user-register', function () {
+    return view('register');
+});
+
+Route::get('user-forgot-password', function () {
+    return view('forgot-password');
+});
+
+Route::get('admin',function(){
+  return view('admin.layout.index');
+});
+
+Route::group(['prefix'=>'admin'],function(){
+  Route::group(['prefix'=>'chitietdonhang'],function(){
+    Route::get('danhsach',['as'=>'chitietdonhang-list','uses'=>'chitietdonhangController@getDanhSach']);
+    Route::get('sua/{ctdh_sp_id}',['as'=>'chitietdonhang-edit','uses'=>'chitietdonhangController@getSua']);
+    Route::post('sua/{ctdh_sp_id}',['as'=>'chitietdonhang-edit','uses'=>'chitietdonhangController@postSua']);
+    Route::get('xoa/{ctdh_sp_id}',['as'=>'chitietdonhang-delete','uses'=>'chitietdonhangController@getXoa']);
+    Route::get('them',['as'=>'chitietdonhang-add','uses'=>'chitietdonhangController@getThem']);
+    Route::post('them',['as'=>'chitietdonhang-add','uses'=>'chitietdonhangController@postThem']);
+  });
+  Route::group(['prefix'=>'cuocphivanchuyen'],function(){
+    Route::get('danhsach',['as'=>'cuocphivanchuyen-list','uses'=>'cuocphivanchuyenController@getDanhSach']);
+    Route::get('sua/{cpvc_id}',['as'=>'cuocphivanchuyen-edit','uses'=>'cuocphivanchuyenController@getSua']);
+    Route::post('sua/{cpvc_id}',['as'=>'cuocphivanchuyen-edit','uses'=>'cuocphivanchuyenController@postSua']);
+    Route::get('xoa/{cpvc_id}',['as'=>'cuocphivanchuyen-delete','uses'=>'cuocphivanchuyenController@getXoa']);
+    Route::get('them',['as'=>'cuocphivanchuyen-add','uses'=>'cuocphivanchuyenController@getThem']);
+    Route::post('them',['as'=>'cuocphivanchuyen-add','uses'=>'cuocphivanchuyenController@postThem']);
+  });
+  Route::group(['prefix'=>'danhmucsanpham'],function(){
+    Route::get('danhsach',['as'=>'danhmucsanpham-list','uses'=>'danhmucsanphamController@getDanhSach']);
+    Route::get('sua/{dmsp_id}',['as'=>'danhmucsanpham-edit','uses'=>'danhmucsanphamController@getSua']);
+    Route::post('sua/{dmsp_id}',['as'=>'danhmucsanpham-edit','uses'=>'danhmucsanphamController@postSua']);
+    Route::get('them',['as'=>'danhmucsanpham-add','uses'=>'danhmucsanphamController@getThem']);
+    Route::post('them',['as'=>'danhmucsanpham-add','uses'=>'danhmucsanphamController@postThem']);
+    Route::get('xoa/{dmsp_id}',['as'=>'danhmucsanpham-delete','uses'=>'danhmucsanphamController@getXoa']);
+  });
+  Route::group(['prefix'=>'danhmuctintuc'],function(){
+    Route::get('danhsach',['as'=>'danhmuctintuc-list','uses'=>'danhmuctintucController@getDanhSach']);
+    Route::get('sua/{dmtt_id}',['as'=>'danhmuctintuc-edit','uses'=>'danhmuctintucController@getSua']);
+    Route::post('sua/{dmtt_id}',['as'=>'danhmuctintuc-edit','uses'=>'danhmuctintucController@postSua']);
+    Route::get('xoa/{dmtt_id}',['as'=>'danhmuctintuc-delete','uses'=>'danhmuctintucController@getXoa']);
+    Route::get('them',['as'=>'danhmuctintuc-add','uses'=>'danhmuctintucController@getThem']);
+    Route::post('them',['as'=>'danhmuctintuc-add','uses'=>'danhmuctintucController@postThem']);
+  });
+  Route::group(['prefix'=>'diachigiaohang'],function(){
+    Route::get('danhsach',['as'=>'diachigiaohang-list','uses'=>'diachigiaohangController@getDanhSach']);
+    Route::get('sua/{dcgh_stt}',['as'=>'diachigiaohang-edit','uses'=>'diachigiaohangController@getSua']);
+    Route::post('sua/{dcgh_stt}',['as'=>'diachigiaohang-edit','uses'=>'diachigiaohangController@postSua']);
+    Route::get('xoa/{dcgh_stt}',['as'=>'diachigiaohang-delete','uses'=>'diachigiaohangController@getXoa']);
+    Route::get('them',['as'=>'diachigiaohang-add','uses'=>'diachigiaohangController@getThem']);
+    Route::post('them',['as'=>'diachigiaohang-add','uses'=>'diachigiaohangController@postThem']);
+  });
+  Route::group(['prefix'=>'donhang'],function(){
+    Route::get('danhsach',['as'=>'donhang-list','uses'=>'donhangController@getDanhSach']);
+    Route::get('sua/{dh_id}',['as'=>'donhang-edit','uses'=>'donhangController@getSua']);
+    Route::post('sua/{dh_id}',['as'=>'donhang-edit','uses'=>'donhangController@postSua']);
+    Route::get('xoa/{dh_id}',['as'=>'donhang-delete','uses'=>'donhangController@getXoa']);
+    Route::get('them',['as'=>'donhang-add','uses'=>'donhangController@getThem']);
+    Route::post('them',['as'=>'donhang-add','uses'=>'donhangController@postThem']);
+  });
+  Route::group(['prefix'=>'donhangdoi_tra'],function(){
+    Route::get('danhsach',['as'=>'donhangdoi_tra-list','uses'=>'donhangdoi_traController@getDanhSach']);
+    Route::get('sua/{dhdt_id}',['as'=>'donhangdoi_tra-edit','uses'=>'donhangdoi_traController@getSua']);
+    Route::post('sua/{dhdt_id}',['as'=>'donhangdoi_tra-edit','uses'=>'donhangdoi_traController@postSua']);
+    Route::get('xoa/{dhdt_id}',['as'=>'donhangdoi_tra-delete','uses'=>'donhangdoi_traController@getXoa']);
+    Route::get('them',['as'=>'donhangdoi_tra-add','uses'=>'donhangdoi_traController@getThem']);
+    Route::post('them',['as'=>'donhangdoi_tra-add','uses'=>'donhangdoi_traController@postThem']);
+  });
+  Route::group(['prefix'=>'donvitinh'],function(){
+    Route::get('danhsach',['as'=>'donvitinh-list','uses'=>'donvitinhController@getDanhSach']);
+    Route::get('sua/{donvitinh_id}',['as'=>'donvitinh-edit','uses'=>'donvitinhController@getSua']);
+    Route::post('sua/{donvitinh_id}',['as'=>'donvitinh-edit','uses'=>'donvitinhController@postSua']);
+    Route::get('xoa/{donvitinh_id}',['as'=>'donvitinh-delete','uses'=>'donvitinhController@getXoa']);
+    Route::get('them',['as'=>'donvitinh-add','uses'=>'donvitinhController@getThem']);
+    Route::post('them',['as'=>'donvitinh-add','uses'=>'donvitinhController@postThem']);
+  });
+  Route::group(['prefix'=>'khachhang'],function(){
+    Route::get('danhsach',['as'=>'khachhang-list','uses'=>'khachhangController@getDanhSach']);
+    Route::get('sua/{kh_id}',['as'=>'khachhang-edit','uses'=>'khachhangController@getSua']);
+    Route::post('sua/{kh_id}',['as'=>'khachhang-edit','uses'=>'khachhangController@postSua']);
+    Route::get('xoa/{kh_id}',['as'=>'khachhang-delete','uses'=>'khachhangController@getXoa']);
+  });
+  Route::group(['prefix'=>'khohang'],function(){
+    Route::get('danhsach',['as'=>'khohang-list','uses'=>'khohangController@getDanhSach']);
+    Route::get('sua/{khohang_id}',['as'=>'khohang-edit','uses'=>'khohangController@getSua']);
+    Route::post('sua/{khohang_id}',['as'=>'khohang-edit','uses'=>'khohangController@postSua']);
+    Route::get('xoa/{khohang_id}',['as'=>'khohang-delete','uses'=>'khohangController@getXoa']);
+    Route::get('them',['as'=>'khohang-add','uses'=>'khohangController@getThem']);
+    Route::post('them',['as'=>'khohang-add','uses'=>'khohangController@postThem']);
+  });
+  Route::group(['prefix'=>'loaikhuyenmai'],function(){
+    Route::get('danhsach',['as'=>'loaikhuyenmai-list','uses'=>'loaikhuyenmaiController@getDanhSach']);
+    Route::get('sua/{km_id}',['as'=>'loaikhuyenmai-edit','uses'=>'loaikhuyenmaiController@getSua']);
+    Route::post('sua/{km_id}',['as'=>'loaikhuyenmai-edit','uses'=>'loaikhuyenmaiController@postSua']);
+    Route::get('xoa/{km_id}',['as'=>'loaikhuyenmai-delete','uses'=>'loaikhuyenmaiController@getXoa']);
+    Route::get('them',['as'=>'loaikhuyenmai-add','uses'=>'loaikhuyenmaiController@getThem']);
+    Route::post('them',['as'=>'loaikhuyenmai-add','uses'=>'loaikhuyenmaiController@postThem']);
+  });
+  Route::group(['prefix'=>'loainguoidung'],function(){
+    Route::get('danhsach',['as'=>'loainguoidung-list','uses'=>'loainguoidungController@getDanhSach']);
+    Route::get('sua/{lnd_id}',['as'=>'loainguoidung-edit','uses'=>'loainguoidungController@getSua']);
+    Route::post('sua/{lnd_id}',['as'=>'loainguoidung-edit','uses'=>'loainguoidungController@postSua']);
+    Route::get('xoa/{lnd_id}',['as'=>'loainguoidung-delete','uses'=>'loainguoidungController@getXoa']);
+    Route::get('them',['as'=>'loainguoidung-add','uses'=>'loainguoidungController@getThem']);
+    Route::post('them',['as'=>'loainguoidung-add','uses'=>'loainguoidungController@postThem']);
+  });
+  Route::group(['prefix'=>'loainhanvien'],function(){
+    Route::get('danhsach',['as'=>'loainhanvien-list','uses'=>'loainhanvienController@getDanhSach']);
+    Route::get('sua/{lnv_id}',['as'=>'loainhanvien-edit','uses'=>'loainhanvienController@getSua']);
+    Route::post('sua/{lvd_id}',['as'=>'loainhanvien-edit','uses'=>'loainhanvienController@postSua']);
+    Route::get('xoa/{lnv_id}',['as'=>'loainhanvien-delete','uses'=>'loainhanvienController@getXoa']);
+    Route::get('them',['as'=>'loainhanvien-add','uses'=>'loainhanvienController@getThem']);
+    Route::post('them',['as'=>'loainhanvien-add','uses'=>'loainhanvienController@postThem']);
+  });
+  Route::group(['prefix'=>'loaithanhtoan'],function(){
+    Route::get('danhsach',['as'=>'loaithanhtoan-list','uses'=>'loaithanhtoanController@getDanhSach']);
+    Route::get('sua/{ltt_id}',['as'=>'loaithanhtoan-edit','uses'=>'loaithanhtoanController@getSua']);
+    Route::post('sua/{ltt_id}',['as'=>'loaithanhtoan-edit','uses'=>'loaithanhtoanController@postSua']);
+    Route::get('xoa/{ltt_id}',['as'=>'loaithanhtoan-delete','uses'=>'loaithanhtoanController@getXoa']);
+    Route::get('them',['as'=>'loaithanhtoan-add','uses'=>'loaithanhtoanController@getThem']);
+    Route::post('them',['as'=>'loaithanhtoan-add','uses'=>'loaithanhtoanController@postThem']);
+  });
+  Route::group(['prefix'=>'loaithue'],function(){
+    Route::get('danhsach',['as'=>'loaithue-list','uses'=>'loaithueController@getDanhSach']);
+    Route::get('sua/{loai_thue_id}',['as'=>'loaithue-edit','uses'=>'loaithueController@getSua']);
+    Route::post('sua/{loai_thue_id}',['as'=>'loaithue-edit','uses'=>'loaithueController@postSua']);
+    Route::get('xoa/{loai_thue_id}',['as'=>'loaithue-delete','uses'=>'loaithueController@getXoa']);
+    Route::get('them',['as'=>'loaithue-add','uses'=>'loaithueController@getThem']);
+    Route::post('them',['as'=>'loaithue-add','uses'=>'loaithueController@postThem']);
+  });
+  Route::group(['prefix'=>'mucthue'],function(){
+    Route::get('danhsach',['as'=>'mucthue-list','uses'=>'mucthueController@getDanhSach']);
+    Route::get('sua/{mt_id}',['as'=>'mucthue-edit','uses'=>'mucthueController@getSua']);
+    Route::post('sua/{mt_id}',['as'=>'mucthue-edit','uses'=>'mucthueController@postSua']);
+    Route::get('xoa/{mt_id}',['as'=>'mucthue-delete','uses'=>'mucthueController@getXoa']);
+    Route::get('them',['as'=>'mucthue-add','uses'=>'mucthueController@getThem']);
+    Route::post('them',['as'=>'mucthue-add','uses'=>'mucthueController@postThem']);
+  });
+  Route::group(['prefix'=>'nguoidung'],function(){
+    Route::get('danhsach',['as'=>'nguoidung-list','uses'=>'nguoidungController@getDanhSach']);
+    Route::get('sua/{nd_id}',['as'=>'nguoidung-edit','uses'=>'nguoidungController@getSua']);
+    Route::post('sua/{nd_id}',['as'=>'nguoidung-edit','uses'=>'nguoidungController@postSua']);
+    Route::get('xoa/{nd_id}',['as'=>'nguoidung-delete','uses'=>'nguoidungController@getXoa']);
+    Route::get('them',['as'=>'nguoidung-add','uses'=>'nguoidungController@getThem']);
+    Route::post('them',['as'=>'nguoidung-add','uses'=>'nguoidungController@postThem']);
+  });
+  Route::group(['prefix'=>'nhanvien'],function(){
+    Route::get('danhsach',['as'=>'nhanvien-list','uses'=>'nhanvienController@getDanhSach']);
+    Route::get('sua/{nv_id}',['as'=>'nhanvien-edit','uses'=>'nhanvienController@getSua']);
+    Route::post('sua/{nv_id}',['as'=>'nhanvien-edit','uses'=>'nhanvienController@postSua']);
+    Route::get('xoa/{nv_id}',['as'=>'nhanvien-delete','uses'=>'nhanvienController@getXoa']);
+    Route::get('them',['as'=>'nhanvien-add','uses'=>'nhanvienController@getThem']);
+    Route::post('them',['as'=>'nhanvien-add','uses'=>'nhanvienController@postThem']);
+  });
+  Route::group(['prefix'=>'nhasanxuat'],function(){
+    Route::get('danhsach',['as'=>'nhasanxuat-list','uses'=>'nhasanxuatController@getDanhSach']);
+    Route::get('sua/{nsx_id}',['as'=>'nhasanxuat-edit','uses'=>'nhasanxuatController@getSua']);
+    Route::post('sua/{nsx_id}',['as'=>'nhasanxuat-edit','uses'=>'nhasanxuatController@postSua']);
+    Route::get('xoa/{nsx_id}',['as'=>'nhasanxuat-delete','uses'=>'nhasanxuatController@getXoa']);
+    Route::get('them',['as'=>'nhasanxuat-add','uses'=>'nhasanxuatController@getThem']);
+    Route::post('them',['as'=>'nhasanxuat-add','uses'=>'nhasanxuatController@postThem']);
+  });
+  Route::group(['prefix'=>'phieugiamgia'],function(){
+    Route::get('danhsach',['as'=>'phieugiamgia-list','uses'=>'phieugiamgiaController@getDanhSach']);
+    Route::get('sua/{pgg_id}',['as'=>'phieugiamgia-edit','uses'=>'phieugiamgiaController@getSua']);
+    Route::post('sua/{pgg_id}',['as'=>'phieugiamgia-edit','uses'=>'phieugiamgiaController@postSua']);
+    Route::get('xoa/{pgg_id}',['as'=>'phieugiamgia-delete','uses'=>'phieugiamgiaController@getXoa']);
+    Route::get('them',['as'=>'phieugiamgia-add','uses'=>'phieugiamgiaController@getThem']);
+    Route::post('them',['as'=>'phieugiamgia-add','uses'=>'phieugiamgiaController@postThem']);
+  });
+  Route::group(['prefix'=>'sanpham'],function(){
+    Route::get('danhsach',['as'=>'sanpham-list','uses'=>'sanphamController@getDanhSach']);
+    Route::get('sua/{sp_id}',['as'=>'sanpham-edit','uses'=>'sanphamController@getSua']);
+    Route::post('sua/{sp_id}',['as'=>'sanpham-edit','uses'=>'sanphamController@postSua']);
+    Route::get('xoa/{sp_id}',['as'=>'sanpham-delete','uses'=>'sanphamController@getXoa']);
+    Route::get('them',['as'=>'sanpham-add','uses'=>'sanphamController@getThem']);
+    Route::post('them',['as'=>'sanpham-add','uses'=>'sanphamController@postThem']);
+  });
+  Route::group(['prefix'=>'thanhpho'],function(){
+    Route::get('danhsach',['as'=>'thanhpho-list','uses'=>'thanhphoController@getDanhSach']);
+    Route::get('sua/{tp_id}',['as'=>'thanhpho-edit','uses'=>'thanhphoController@getSua']);
+    Route::post('sua/{tp_id}',['as'=>'thanhpho-edit','uses'=>'thanhphoController@postSua']);
+    Route::get('xoa/{tp_id}',['as'=>'thanhpho-delete','uses'=>'thanhphoController@getXoa']);
+    Route::get('them',['as'=>'thanhpho-add','uses'=>'thanhphoController@getThem']);
+    Route::post('them',['as'=>'thanhpho-add','uses'=>'thanhphoController@postThem']);
+  });
+  Route::group(['prefix'=>'tinhtrangdonhang'],function(){
+    Route::get('danhsach',['as'=>'tinhtrangdonhang-list','uses'=>'tinhtrangdonhangController@getDanhSach']);
+    Route::get('sua/{tinh_trang_id}',['as'=>'tinhtrangdonhang-edit','uses'=>'tinhtrangdonhangController@getSua']);
+    Route::post('sua/{tinh_trang_id}',['as'=>'tinhtrangdonhang-edit','uses'=>'tinhtrangdonhangController@postSua']);
+    Route::get('them',['as'=>'tinhtrangdonhang-add','uses'=>'tinhtrangdonhangController@getThem']);
+    Route::post('them',['as'=>'tinhtrangdonhang-add','uses'=>'tinhtrangdonhangController@postThem']);
+    Route::get('xoa/{tinh_trang_id}',['as'=>'tinhtrangdonhang-delete','uses'=>'tinhtrangdonhangController@getXoa']);
+  });
+  Route::group(['prefix'=>'tintuc'],function(){
+    Route::get('danhsach',['as'=>'tintuc-list','uses'=>'tintucController@getDanhSach']);
+    Route::get('sua/{tt_id}',['as'=>'tintuc-edit','uses'=>'tintucController@getSua']);
+    Route::post('sua/{tt_id}',['as'=>'tintuc-edit','uses'=>'tintucController@postSua']);
+    Route::get('xoa/{tt_id}',['as'=>'tintuc-delete','uses'=>'tintucController@getXoa']);
+    Route::get('them',['as'=>'tintuc-add','uses'=>'tintucController@getThem']);
+    Route::post('them',['as'=>'tintuc-add','uses'=>'tintucController@postThem']);
+  });
+});
