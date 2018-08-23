@@ -5,27 +5,29 @@
         <!-- row -->
         <div class="row">
             <!-- footer widget -->
-            <div class="col-md-3 col-sm-6 col-xs-6">
+            <div class="col-md-4 col-sm-6 col-xs-6">
                 <div class="footer">
                     <!-- footer logo -->
-                    <div class="footer-logo">
+                    <div >
                         <a class="logo" href="#">
                             <img src="./img/logo-DC.png" alt="" style="max-height: 0%">
                         </a>
                     </div>
                     <!-- /footer logo -->
 
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna</p>
+                    <div>
+                        <i class="fa fa-location-arrow text-center" style="width: 10%; height: 10%; border: 1px solid white; padding: 5px"></i>
+                        371 Nguyễn Kiệm, phường 3, Quận Gò Vấp, Tp.HCM
+                    </div>
+                    <div>
+                        <i class="fa fa-phone text-center" style="width: 10%; height: 10%; border: 1px solid white; padding: 5px"></i>
+                        0123456789
+                    </div>
+                    <div>
+                        <i class="fa fa-envelope text-center" style="width: 10%; height: 10%; border: 1px solid white; padding: 5px"></i>
+                        dc-service@gmail.com
+                    </div>
 
-                    <!-- footer social -->
-                    <ul class="footer-social">
-                        <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                        <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                        <li><a href="#"><i class="fa fa-instagram"></i></a></li>
-                        <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
-                        <li><a href="#"><i class="fa fa-pinterest"></i></a></li>
-                    </ul>
-                    <!-- /footer social -->
                 </div>
             </div>
             <!-- /footer widget -->
@@ -33,29 +35,23 @@
             <!-- footer widget -->
             <div class="col-md-3 col-sm-6 col-xs-6">
                 <div class="footer">
-                    <h3 class="footer-header">My Account</h3>
-                    <ul class="list-links">
-                        <li><a href="#">My Account</a></li>
-                        <li><a href="#">My Wishlist</a></li>
-                        <li><a href="#">Compare</a></li>
-                        <li><a href="#">Checkout</a></li>
-                        <li><a href="#">Login</a></li>
-                    </ul>
+                    <h3 class="footer-header">Facebook fanpage</h3>
+                    {{--Facebook API--}}
                 </div>
             </div>
             <!-- /footer widget -->
 
-            <div class="clearfix visible-sm visible-xs"></div>
-
             <!-- footer widget -->
-            <div class="col-md-3 col-sm-6 col-xs-6">
+            <div class="col-md-2 col-sm-6 col-xs-6">
                 <div class="footer">
-                    <h3 class="footer-header">Customer Service</h3>
+                    <h3 class="footer-header">Thông tin</h3>
                     <ul class="list-links">
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">Shiping & Return</a></li>
-                        <li><a href="#">Shiping Guide</a></li>
-                        <li><a href="#">FAQ</a></li>
+                        <li><a href="{{url('gioi-thieu')}}">Giới thiệu</a></li>
+                        <li><a href="{{url('/chinh-sach-van-chuyen')}}">Chính sách vận chuyển</a></li>
+                        <li><a href="{{url('/quy-dinh-ve-chinh-sach')}}">Quy định về chính sách</a></li>
+                        <li><a href="{{url('/chinh-sach-doi-tra')}}">Chính sách đổi trả</a></li>
+                        <li><a href="{{url('/chinh-sach-bao-mat')}}">Chính sách bảo mật</a></li>
+                        <li><a href="{{url('/chinh-sach-bao-hanh')}}"> Chính sách bảo hành</a></li>
                     </ul>
                 </div>
             </div>
@@ -64,13 +60,12 @@
             <!-- footer subscribe -->
             <div class="col-md-3 col-sm-6 col-xs-6">
                 <div class="footer">
-                    <h3 class="footer-header">Stay Connected</h3>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor.</p>
+                    <h3 class="footer-header">Đăng ký nhận tin</h3>
                     <form>
                         <div class="form-group">
-                            <input class="input" placeholder="Enter Email Address">
+                            <input class="input" type="text" name="txtDKNT" placeholder="Vui lòng nhập email của bạn..">
                         </div>
-                        <button class="primary-btn">Join Newslatter</button>
+                        <button class="primary-btn" type="submit">Đăng ký</button>
                     </form>
                 </div>
             </div>

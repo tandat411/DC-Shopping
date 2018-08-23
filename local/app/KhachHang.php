@@ -23,4 +23,19 @@ class KhachHang extends Model
     public function diachigiaohang(){
         return $this->hasMany("App/DiaChiGiaoHang");
     }
+
+    //1 khách có thể có nhiều bình luận
+    public function binhluan(){
+        return $this->hasMany('App/BinhLuan');
+    }
+
+    //1 khách có thể có nhiều hành vi
+    public function hanhvi(){
+        return $this->hasMany('App/HanhVi');
+    }
+
+    //1 khách có thể có nhiều sản phẩm yêu thích
+    public function sanphamyeuthich(){
+        return $this->hasMany('App/SanPhamYeuThich');
+    }
 }

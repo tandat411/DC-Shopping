@@ -105,7 +105,7 @@
     infinite: true,
     speed: 300,
     dots: false,
-    arrows: true,
+    arrows: false,
     fade: true,
     asNavFor: '#product-view',
   });

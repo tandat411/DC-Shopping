@@ -1,3 +1,4 @@
+<?php $SPYT = \App\SanPhamYeuThich::all(); ?>
 <!-- HEADER -->
 <header>
     <!-- top Header -->
@@ -8,8 +9,30 @@
             </div>
             <div class="pull-right">
                 <ul class="header-top-links">
-                    <li><a href="{{url('/user-login')}}">Đăng nhập</a></li>
-                    <li><a href="{{url('/user-register')}}">Đăng ký</a></li>
+                    @if(isset($UserLogin))
+                        {{--Nếu user thuộc loại người dùng 2(khách hàng) thì mới cho tiếp tục đăng nhập--}}
+                        <!-- Account -->
+                        <li class="header-account dropdown default-dropdown">
+                            <div class="dropdown-toggle" role="button" data-toggle="dropdown" aria-expanded="true">
+                                <i class="fa fa-user-o" style="color: #ffc107;"></i>
+                                <strong class="text-uppercase" style="color: #ffc107;">{{$UserLogin->name}} <i class="fa fa-caret-down"></i></strong>
+                            </div>
+                            <ul class="custom-menu">
+                                <li><a href="{{url('user/thong-tin-khach-hang')}}"><i class="fa fa-user-o"></i>Tài khoản</a></li>
+                                <li>
+                                    <a href="{{url('muc-san-pham/danh-sach-yeu-thich')}}">
+                                        <i class="fa fa-heart-o"></i>Yêu thích <span class="lay">{{$SPYT->count()}}</span>
+                                    </a>
+                                </li>
+                                <li><a href="{{url('user/thanh-toan')}}"><i class="fa fa-check"></i>Thanh toán</a></li>
+                                <li><a href="{{url('user/logout')}}"><i class="fa fa-unlock-alt"></i>Đăng xuất</a></li>
+                            </ul>
+                        </li>
+                        <!-- /Account -->
+                    @else
+                        <li><a href="{{url('user/login')}}">Đăng nhập</a></li>
+                        <li><a href="{{url('user/register')}}">Đăng ký</a></li>
+                    @endif
                     <li class="dropdown default-dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">ENG <i class="fa fa-caret-down"></i></a>
                         <ul class="custom-menu">
@@ -36,8 +59,8 @@
     <div>
         <div class="container" style="position: relative">
                 <!-- Logo -->
-                <div class="header-logo" style="width: 30%; ">
-                    <a class="logo" href="#">
+                <div class="header-logo" style="width: 25%; ">
+                    <a class="logo" href="{{url('/')}}">
                         <img src="./img/logo-DC.png" alt="" style="max-height: 120px;">
                     </a>
                 </div>
@@ -56,26 +79,6 @@
                 <!-- /Search -->
             <div style="float: right; margin-top: 1.7%">
                 <ul class="header-btns">
-                    <!-- Account -->
-                    <li class="header-account dropdown default-dropdown">
-                        <div class="dropdown-toggle" role="button" data-toggle="dropdown" aria-expanded="true">
-                            <div class="header-btns-icon">
-                                <i class="fa fa-user-o"></i>
-                            </div>
-                            <strong class="text-uppercase">My Account <i class="fa fa-caret-down"></i></strong>
-                        </div>
-                        <a href="#" class="text-uppercase">Login</a> / <a href="#" class="text-uppercase">Join</a>
-                        <ul class="custom-menu">
-                            <li><a href="#"><i class="fa fa-user-o"></i> My Account</a></li>
-                            <li><a href="#"><i class="fa fa-heart-o"></i> My Wishlist</a></li>
-                            <li><a href="#"><i class="fa fa-exchange"></i> Compare</a></li>
-                            <li><a href="#"><i class="fa fa-check"></i> Checkout</a></li>
-                            <li><a href="#"><i class="fa fa-unlock-alt"></i> Login</a></li>
-                            <li><a href="#"><i class="fa fa-user-plus"></i> Create An Account</a></li>
-                        </ul>
-                    </li>
-                    <!-- /Account -->
-
                     <!-- Cart -->
                     <li class="header-cart dropdown default-dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">

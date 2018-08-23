@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class MucThue extends Model
 {
-    protected $table = "mucthue";
+    protected $table      = "mucthue";
     protected $primaryKey = "mt_id";
 
     //1 mức thuế thuộc 1 loại thuế

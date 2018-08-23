@@ -1,7 +1,7 @@
 @extends('layouts.master-layout')
 
 @section('title')
-    <title>OU-Computer</title>
+    <title>DC-Shopping</title>
 @endsection
 
 @section('header')

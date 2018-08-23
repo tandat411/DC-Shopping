@@ -43,5 +43,28 @@ class SanPham extends Model
         return $this->belongsTo("App/LoaiKhuyenMai");
     }
 
+    //1 sản phẩm có thể có nhiều bình luận từ khách hàng
+    public function binhluan(){
+        return $this->hasMany('App/BinhLuan');
+    }
 
+    //1 sản phẩm có thể có nhiều hành vi từ khách hàng
+    public function hanhvi(){
+        return $this->hasMany('App/HanhVi');
+    }
+
+    //1 sản phẩm có thể nằm trong sản phẩm yêu thích của nhiều khách hàng
+    public function sanphamyeuthich(){
+        return $this->hasMany('App/SanPhamYeuThich');
+    }
+
+    //1 sản phẩm có thể có nhiều hình ảnh
+    public function hinhanhsanpham(){
+        return $this->hasMany('App/HinhAnhSanPham');
+    }
+
+    //1 sản phẩm có thể được bán với nhiều kích thước(Size)
+    public function kichthuoc(){
+        return $this->hasMany('App/KichThuoc');
+    }
 }

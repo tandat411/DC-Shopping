@@ -33,6 +33,10 @@ class DonHang extends Model
     public function donhangdoi_tra(){
         return $this->hasOne("App/DonHangDoi_Tra");
     }
+    //1 đơn hàng có 1 phiếu giao hàng
+    public function phieugiaohang(){
+        return $this->hasOne("App/PhieuGiaoHang");
+    }
 
     //1 đơn hàng thuộc về 1 khách hàng
     public function khachhang(){
@@ -42,5 +46,9 @@ class DonHang extends Model
     //1 đơn hàng có 1 cước phí vận chuyển
     public function cuocphivanchuyen(){
         return $this->belongsTo("App/CuocPhiVanChuyen");
+    }
+    //1 đơn hàng có thuộc về 1 địa chỉ giao hàng
+    public function diachigiaohang(){
+        return $this->belongsTo("App/DiaChiGiaoHang");
     }
 }

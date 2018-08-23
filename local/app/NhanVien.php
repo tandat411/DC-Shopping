@@ -13,4 +13,9 @@ class NhanVien extends Model
     public function loainhanvien(){
         return $this->belongsTo("App/LoaiNhanVien");
     }
+    //1 nhân viên có thể phụ trách nhiều phiếu giao hàng
+    public function phieugiaohang(){
+        return $this->hasMany("App/PhieuGiaoHang");
+    }
+
 }

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class ChiTietDonHang extends Model
 {
     protected $table = "chitietdonhang";
-    protected $primaryKey = ["ctdh_dh_id","ctdh_sp_id"];
+    protected $primaryKey = "ctdh_id";
 
     //1 chi tiết đơn hàng thuộc về 1 đơn hàng
     public function donhang(){
