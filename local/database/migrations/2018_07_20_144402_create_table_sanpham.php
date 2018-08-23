@@ -20,7 +20,6 @@ class CreateTableSanpham extends Migration
             $table->double('sp_gia_niem_yet');
             $table->double('sp_gia_ban');
             $table->string('sp_mo_ta');
-            $table->string('sp_hinh_anh');
             $table->integer('sp_don_vi_tinh_id')->unsigned();
             $table->integer('sp_danh_muc_id')->unsigned();
             $table->integer('sp_nsx_id')->unsigned();

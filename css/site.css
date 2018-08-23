@@ -5,6 +5,9 @@
     position: absolute;
     margin-top: 3%;
 }
+.header-logo{
+    margin-right: 10%;
+}
 .footer .footer-header{
     color: #D50000;
 }
@@ -32,6 +35,11 @@ a:hover, a:focus{
 }
 
 .category-nav .category-list>li>a:hover, .category-nav .category-list>li>a:focus, .category-nav .category-list>li.dropdown.open>a{
+    color: #D50000;
+    cursor: pointer;
+}
+
+.product-price{
     color: #D50000;
 }
 .product .product-label>span.sale{
@@ -75,7 +83,7 @@ ul.footer-social > li > a > i.fa:hover{
 }
 
 .product .product-old-price{
-    color: #D50000;
+    color: #30323A;
 }
 
 .dropdown.side-dropdown>.custom-menu{
@@ -120,5 +128,63 @@ li.nav-toggle > button{
 
 .footer .list-links li>a{
     color: white;
+}
+
+th, td{
+    padding: 10px;
+}
+
+.lay{
+    position: absolute;
+    right: 65px;
+    top: 55px;
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+    text-align: center;
+    font-size: 10px;
+    background: #D50000;
+    color: #FFF;
+    border-radius: 50%;
+}
+
+.size-option  a {
+    cursor: pointer;
+}
+
+.size-option>li > a:above-level{
+    color: #2e6da4;
+}
+
+.select-custom{
+    border: 1px solid #D50000;
+    cursor: pointer;
+    width: 50px;
+}
+input[type="number"].spin-off {
+    border: 1px solid #30323A;
+    -webkit-appearance: textfield;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+input[type=number].spin-off::-webkit-inner-spin-button,
+input[type=number].spin-off::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+}
+
+.soluong{
+    width:40px;
+    height: 29px;
+    background: white;
+    border: 1px solid #30323A;
+    color: #30323A;
+}
+.soluong:hover{
+    border: 1px solid #D50000;
+    color: #D50000;
+}
+
+option[disabled]{
+    display: none;
 }
 /*-----------------------------------------------------------------------------------------------------*/

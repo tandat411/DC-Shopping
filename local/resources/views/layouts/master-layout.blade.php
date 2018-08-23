@@ -52,10 +52,11 @@
         @yield('home')
     <!-- /HOME -->
 
+    <div id="abc">
     <!-- CONTENT -->
         @yield('content')
     <!-- /CONTENT -->
-
+    </div>
     <!-- FOOTER -->
         @yield('footer')
     <!-- /FOOTER -->
