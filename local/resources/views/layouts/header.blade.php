@@ -1,4 +1,17 @@
-<?php $SPYT = \App\SanPhamYeuThich::all(); ?>
+<?php
+    $SPYT = \App\SanPhamYeuThich::all();
+    if(isset($Customer)){
+        $all_cart = \Gloudemans\Shoppingcart\Facades\Cart::content()->toArray();
+        $list_cart = array();
+        $total = 0;
+        foreach ($all_cart as $item){
+            if($item['options']['id_KH'] == $Customer['kh_id']){
+                $list_cart[] = $item;
+                $total += $item['subtotal'];
+            }
+        }
+    }
+?>
 <!-- HEADER -->
 <header>
     <!-- top Header -->
@@ -77,47 +90,48 @@
                     </div>
                 </div>
                 <!-- /Search -->
-            <div style="float: right; margin-top: 1.7%">
+            @if(isset($UserLogin))
+            <div class="pull-right" style="margin-top: 1.7%; width: 15%;">
                 <ul class="header-btns">
                     <!-- Cart -->
                     <li class="header-cart dropdown default-dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
                             <div class="header-btns-icon">
                                 <i class="fa fa-shopping-cart"></i>
-                                <span class="qty">3</span>
+                                <span class="qty">{{count($list_cart)}}</span>
                             </div>
                             <strong>Giỏ hàng:</strong>
                             <br>
-                            <span>35.20$</span>
+                            <span>{{number_format($total)}} <u>đ</u></span>
                         </a>
-                        <div class="custom-menu">
+                        <div class="custom-menu" style="width: 185%">
                             <div id="shopping-cart">
-                                <div class="shopping-cart-list">
+                                <label class="shopping-cart-list">
+                                    <form method="post" action="{{url('user/gio-hang')}}">
+                                    @foreach($list_cart as $row)
+                                    <input type="hidden" name="row_id" value="{{$row['rowId']}}">
                                     <div class="product product-widget">
                                         <div class="product-thumb">
-                                            <img src="./img/thumb-product01.jpg" alt="">
+                                            <img src="uploads/sanpham/{{$row['options']['img']}}">
                                         </div>
                                         <div class="product-body">
-                                            <h3 class="product-price">$32.50 <span class="qty">x3</span></h3>
-                                            <h2 class="product-name"><a href="#">Product Name Goes Here</a></h2>
+                                            <h3 class="product-price">{{$row['price']}} <span class="qty">x{{$row['qty']}}</span></h3>
+                                            <h2 class="product-name"><a href="{{url('chi-tiet-san-pham/'.$row['id'])}}">{{$row['name']}}</a></h2>
                                         </div>
-                                        <button class="cancel-btn"><i class="fa fa-trash"></i></button>
+                                        <button name="deleteCart" class="cancel-btn"><i class="fa fa-trash"></i></button>
                                     </div>
-                                    <div class="product product-widget">
-                                        <div class="product-thumb">
-                                            <img src="./img/thumb-product01.jpg" alt="">
-                                        </div>
-                                        <div class="product-body">
-                                            <h3 class="product-price">$32.50 <span class="qty">x3</span></h3>
-                                            <h2 class="product-name"><a href="#">Product Name Goes Here</a></h2>
-                                        </div>
-                                        <button class="cancel-btn"><i class="fa fa-trash"></i></button>
+                                    @endforeach
+                                    </form>
+                                    @if(count($list_cart) > 0)
+                                    <div class="shopping-cart-btns">
+                                        <a href="{{url('user/gio-hang')}}" class="main-btn">Xem giỏ hàng </a>
+                                        <a href="{{url('user/thanh-toan')}}" class="primary-btn">Thanh toán <i class="fa fa-arrow-circle-right"></i></a>
                                     </div>
-                                </div>
-                                <div class="shopping-cart-btns">
-                                    <button class="main-btn">View Cart</button>
-                                    <button class="primary-btn">Checkout <i class="fa fa-arrow-circle-right"></i></button>
-                                </div>
+                                    @else
+                                    <label class="text-center">
+                                        Chưa có sản phẩm nào được thêm vào giỏ hàng
+                                    </label>
+                                    @endif
                             </div>
                         </div>
                     </li>
@@ -130,6 +144,7 @@
                     <!-- / Mobile nav toggle -->
                 </ul>
             </div>
+            @endif
         </div>
         <!-- header -->
     </div>

@@ -64,10 +64,26 @@
                                     if(isset($Customer)){
                                         $yeuthich = \App\SanPhamYeuThich::where('spyt_sp_id',$sanpham->sp_id)
                                             ->where('spyt_kh_id', $Customer['kh_id'])->count();
-                                    }
 
-                                    //Lấy danh sách bình luận về sản phẩm
-                                    $binhluan = \App\BinhLuan::where('bl_sp_id', $sanpham->sp_id);
+                                        $hanhvi = \App\HanhVi::where('hv_kh_id', $Customer['kh_id'])
+                                            ->where('hv_sp_id', $sanpham->sp_id)->first();
+
+                                        if(empty($hanhvi)){
+                                            $hanhvi = new \App\HanhVi();
+                                            $hanhvi->hv_kh_id   = $Customer['kh_id'];
+                                            $hanhvi->hv_sp_id   = $sanpham->sp_id;
+                                            $hanhvi->hv_rating  = 0;
+                                            $hanhvi->hv_so_lan_xem  += 1;
+                                            $hanhvi->created_at = \Carbon\Carbon::now();
+                                            $hanhvi->updated_at = \Carbon\Carbon::now();
+                                            $hanhvi->save();
+                                        }else{
+                                            $hanhvi->hv_so_lan_xem  += 1;
+                                            $hanhvi->updated_at = \Carbon\Carbon::now();
+                                            $hanhvi->save();
+                                        }
+
+                                    }
 
                                     //Lấy thông tin nhà sản xuất
                                     $nhasanxuat = \App\NhaSanXuat::find($sanpham->sp_nsx_id);
@@ -118,16 +134,23 @@
                             {{--Phần Rating--}}
                             <div>
                                 <div class="product-rating">
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star-o empty"></i>
+                                    @for($i =1; $i <= 5; $i++)
+                                        @if($i <= $tongSao)
+                                            <i class="fa fa-star"></i>
+                                        @else
+                                            <i class="fa fa-star-o empty"></i>
+                                        @endif
+                                    @endfor
                                 </div>
                                 @if($binhluan->count() == 0)
                                     <span>Chưa có bình luận nào</span>
                                 @else
-                                    <span>Có {{$binhluan->count()}} bình luận</span>
+                                    <span>Có {{\App\BinhLuan::where('bl_sp_id', $sanpham->sp_id)->count()}} bình luận</span>
+                                @if($listHanhvi->count() == 0)
+                                    <span>Chưa đánh giá nào</span>
+                                @else
+                                    <span>/ {{$listHanhvi->count()}} đánh giá</span>
+                                @endif
                                 @endif
                             </div>
                             @if($sanpham->sp_so_luong_ton_kho > 0)
@@ -242,99 +265,259 @@
                     <div class="product-tab">
                         <ul class="tab-nav">
                             <li class="active"><a data-toggle="tab" href="#tab1">Mô tả</a></li>
-                            <li><a data-toggle="tab" href="#tab1">Chi tiết</a></li>
-                            <li><a data-toggle="tab" href="#tab2">Bình luận</a></li>
+                            <li><a data-toggle="tab" href="#tab2">Chi tiết</a></li>
                         </ul>
                         <div class="tab-content">
                             <div id="tab1" class="tab-pane fade in active">
-                                <p>{{$sanpham->sp_mo_ta}}</p>
+                                <p>abcd</p>
                             </div>
                             <div id="tab2" class="tab-pane fade in">
-
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="product-reviews">
-                                            <div class="single-review">
-                                                <div class="review-heading">
-                                                    <div><a href="#"><i class="fa fa-user-o"></i> John</a></div>
-                                                    <div><a href="#"><i class="fa fa-clock-o"></i> 27 DEC 2017 / 8:0 PM</a></div>
-                                                    <div class="review-rating pull-right">
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star-o empty"></i>
-                                                    </div>
-                                                </div>
-                                                <div class="review-body">
-                                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Duis aute
-                                                        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
-                                                </div>
-                                            </div>
-
-                                            <div class="single-review">
-                                                <div class="review-heading">
-                                                    <div><a href="#"><i class="fa fa-user-o"></i> John</a></div>
-                                                    <div><a href="#"><i class="fa fa-clock-o"></i> 27 DEC 2017 / 8:0 PM</a></div>
-                                                    <div class="review-rating pull-right">
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star-o empty"></i>
-                                                    </div>
-                                                </div>
-                                                <div class="review-body">
-                                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Duis aute
-                                                        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
-                                                </div>
-                                            </div>
-
-                                            <div class="single-review">
-                                                <div class="review-heading">
-                                                    <div><a href="#"><i class="fa fa-user-o"></i> John</a></div>
-                                                    <div><a href="#"><i class="fa fa-clock-o"></i> 27 DEC 2017 / 8:0 PM</a></div>
-                                                    <div class="review-rating pull-right">
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star"></i>
-                                                        <i class="fa fa-star-o empty"></i>
-                                                    </div>
-                                                </div>
-                                                <div class="review-body">
-                                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Duis aute
-                                                        irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
-                                                </div>
-                                            </div>
-
-                                            <ul class="reviews-pages">
-                                                <li class="active">1</li>
-                                                <li><a href="#">2</a></li>
-                                                <li><a href="#">3</a></li>
-                                                <li><a href="#"><i class="fa fa-caret-right"></i></a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        @if(isset($UserLogin))
-                                            <h4 class="text-uppercase">Viết bình luận</h4>
-                                            <form class="review-form" method="post" action="{{url('chi-tiet-san-pham')}}">
-                                                <div class="form-group">
-                                                    <textarea class="input" name="txtBinhLuan" placeholder="Nhập bình luận.."></textarea>
-                                                </div>
-                                                <input type="submit" class="btn btn-danger" value="Gửi" style="width: 20%">
-                                            </form>
-                                    </div>
-                                    @else
-                                        <h4 class="text-uppercase">Vui lòng đăng nhập để viết bình luận</h4>
-                                        <button class="btn btn-danger" onclick="window.location = '{{url('user/login')}}';">Đăng nhập</button>
-                                </div>
-                                    @endif
-                                </div>
+                                <p>{!! $sanpham->sp_mo_ta !!}</p>
+                            </div>
                             </div>
                         </div>
                     </div>
+                </div>
+        {{--Đánh giá sản phẩm--}}
+                <div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="section-title">
+                                <h4 class="title">Đánh giá</h4>
+                            </div>
+                        </div>
+                        <div class="col-md-6" style="border-right: 1px solid #B8B8B8">
+                            @if(isset($UserLogin))
+                            <div>
+                                <h4>Cho: </h4>
+                                <span class="product-rating" style="color: #FFB656">
+                                    <form method="post" action="{{url('user/hanh-vi')}}">
+                                        {{csrf_field()}}
+                                        <input type="hidden" name="id_KH" value="{{$Customer->kh_id}}">
+                                        <input type="hidden" name="id_SP" value="{{$sanpham->sp_id}}">
+
+                                        <button name="bt_1_Sao" class="set-rating" title="1 Sao"><i class="fa fa-star"></i></button>
+                                        <button name="bt_2_Sao" class="set-rating" title="2 Sao"><i class="fa fa-star"></i></button>
+                                        <button name="bt_3_Sao" class="set-rating" title="3 Sao"><i class="fa fa-star"></i></button>
+                                        <button name="bt_4_Sao" class="set-rating" title="4 Sao"><i class="fa fa-star"></i></button>
+                                        <button name="bt_5_Sao" class="set-rating" title="5 Sao"><i class="fa fa-star"></i></button>
+                                    </form>
+                                </span>
+                            </div>
+                            @else
+                            <h4>
+                                Vui lòng đăng nhập để đánh giá sản phẩm
+                                <button class="btn btn-danger" onclick="window.location = '{{url('user/login')}}';">Đăng nhập</button>
+                            </h4>
+                            @endif
+                            @if($listHanhvi->count() > 0)
+                            <strong style="font-size: 48px;"> {{$tongSao}}/</strong>
+                            <span style="font-size: 32px; color: #FFB656;">5</span>
+                            <span class="product-rating" style="color: #FFB656">
+                                @for($i = 1; $i <= 5; $i++)
+                                    @if($i <= $tongSao)
+                                        <i class="fa fa-star"></i>
+                                    @else
+                                        <i class="fa fa-star-o empty"></i>
+                                    @endif
+                                @endfor
+                            </span>
+                            <div>
+                                Có {{$listHanhvi->count()}} đánh giá về sản phẩm
+                            </div>
+                            @else
+                            <h4 style="margin-top: 10px">Chưa có đánh giá nào về sản phẩm</h4>
+                            @endif
+                        </div>
+                        <div class="col-md-6" >
+                            <div style="display: flex">
+                                <span class="product-rating" style="color: #FFB656">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                </span>
+                                <span class="rating">
+                                    <?php
+                                    $phan_tram = 0;
+                                    if($listHanhvi->count() != 0){
+                                        $phan_tram = (\App\HanhVi::where('hv_rating', 5)->count()/ $listHanhvi->count())*100;
+                                    }
+                                    ?>
+                                    <span class="rating-percent" style="width: {{$phan_tram}}%;"></span>
+                                </span>
+                                <strong>{{\App\HanhVi::where('hv_rating', 5)->where('hv_sp_id', $sanpham->sp_id)->count()}}</strong>
+                            </div>
+                            <div style="display: flex">
+                                <span class="product-rating" style="color: #FFB656">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o empty"></i>
+                                </span>
+                                <span class="rating">
+                                    <?php
+                                    $phan_tram = 0;
+                                    if($listHanhvi->count() != 0){
+                                        $phan_tram = (\App\HanhVi::where('hv_rating', 4)->count()/ $listHanhvi->count())*100;
+                                    }
+                                    ?>
+                                    <span class="rating-percent" style="width: {{$phan_tram}}%;"></span>
+                                </span>
+                                <strong>{{\App\HanhVi::where('hv_rating', 4)->where('hv_sp_id', $sanpham->sp_id)->count()}}</strong>
+                            </div>
+                            <div style="display: flex">
+                                <span class="product-rating" style="color: #FFB656">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o empty"></i>
+                                    <i class="fa fa-star-o empty"></i>
+                                </span>
+                                <span class="rating">
+                                    <?php
+                                        $phan_tram = 0;
+                                        if($listHanhvi->count() != 0){
+                                            $phan_tram = (\App\HanhVi::where('hv_rating', 3)->count()/ $listHanhvi->count())*100;
+                                        }
+                                    ?>
+                                    <span class="rating-percent" style="width: {{$phan_tram}}%;"></span>
+                                </span>
+                                <strong>{{\App\HanhVi::where('hv_rating', 3)->where('hv_sp_id', $sanpham->sp_id)->count()}}</strong>
+                            </div>
+                            <div style="display: flex">
+                                <span class="product-rating" style="color: #FFB656">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o empty"></i>
+                                    <i class="fa fa-star-o empty"></i>
+                                    <i class="fa fa-star-o empty"></i>
+                                </span>
+                                <span class="rating">
+                                    <?php
+                                    $phan_tram = 0;
+                                    if($listHanhvi->count() != 0){
+                                        $phan_tram = (\App\HanhVi::where('hv_rating', 2)->count()/ $listHanhvi->count())*100;
+                                    }
+                                    ?>
+                                    <span class="rating-percent" style="width: {{$phan_tram}}%;"></span>
+                                </span>
+                                <strong>{{\App\HanhVi::where('hv_rating', 2)->where('hv_sp_id', $sanpham->sp_id)->count()}}</strong>
+                            </div>
+                            <div style="display: flex">
+                                <span class="product-rating" style="color: #FFB656">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star-o empty"></i>
+                                    <i class="fa fa-star-o empty"></i>
+                                    <i class="fa fa-star-o empty"></i>
+                                    <i class="fa fa-star-o empty"></i>
+                                </span>
+                                <span class="rating">
+                                    <?php
+                                    $phan_tram = 0;
+                                    if($listHanhvi->count() != 0){
+                                        $phan_tram = (\App\HanhVi::where('hv_rating', 1)->count()/ $listHanhvi->count())*100;
+                                    }
+                                    ?>
+                                    <span class="rating-percent" style="width: {{$phan_tram}}%;"></span>
+                                </span>
+                                <strong>{{\App\HanhVi::where('hv_rating', 1)->where('hv_sp_id', $sanpham->sp_id)->count()}}</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        {{--Bình luận sản phẩm--}}
+                <div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="section-title">
+                                <h4 class="title">Bình luận</h4>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            @if($binhluan->first() != null)
+                                <div class="product-reviews">
+                                    @foreach($binhluan as $bl)
+                                        <div class="single-review">
+                                            <div class="review-heading">
+                                                <div><label><i class="fa fa-user-o"></i> {{\App\KhachHang::find($bl->bl_kh_id)->kh_ten}}</label></div>
+                                                <?php
+                                                $time  = \Carbon\Carbon::parse($bl->created_at);
+                                                $now   = Carbon\Carbon::now();
+                                                $nam   = $now->diffInYears($time);
+                                                $thang = $now->diffInMonths($time);
+                                                $ngay  = $now->diffInDays($time);
+                                                $gio   = $now->diffInHours($time);
+                                                $phut  = $now->diffInMinutes($time);
+                                                $giay  = $now->diffInSeconds($time);
+                                                ?>
+                                                @if($nam > 0)
+                                                    <div><label><i class="fa fa-clock-o"></i> {{$nam}} năm trước</label></div>
+                                                @elseif($thang > 0)
+                                                    <div><label><i class="fa fa-clock-o"></i> {{$thang}} tháng trước</label></div>
+                                                @elseif($ngay > 0)
+                                                    <div><label><i class="fa fa-clock-o"></i> {{$ngay}} ngày trước</label></div>
+                                                @elseif($gio > 0)
+                                                    <div><label><i class="fa fa-clock-o"></i> {{$gio}} giờ trước</label></div>
+                                                @elseif($phut > 0)
+                                                    <div><label><i class="fa fa-clock-o"></i> {{$phut}} phút trước</label></div>
+                                                @elseif($giay > 0)
+                                                    <div><label><i class="fa fa-clock-o"></i> {{$giay}} giây trước</label></div>
+                                                @endif
+                                            </div>
+                                            <div class="review-body">
+                                                <p>{{$bl->bl_noi_dung}}</p>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                    <ul class="reviews-pages">
+                                        @if($binhluan->currentPage() > 1)
+                                            <input type="hidden" id="binhluan_size" value="{{$binhluan->lastPage()}}">
+                                            <li><a href="{{$binhluan->previousPageUrl()}}"><i class="fa fa-caret-left"></i></a></li>
+                                        @endif
+                                        @for($i = 1; $i <= $binhluan->lastPage(); $i++)
+                                            @if($binhluan->currentPage() == $i)
+                                                <li class="active"><u>{{$i}}</u></li>
+                                            @else
+                                                <li id="page-{{$i}}">
+                                                    <a href="{{url($binhluan->url($i))}}">{{$i}}</a>
+                                                </li>
+                                            @endif
+                                        @endfor
+                                        @if($binhluan->currentPage() < $binhluan->lastPage())
+                                            <li><a href="{{$binhluan->nextPageUrl()}}"><i class="fa fa-caret-right"></i></a></li>
+                                        @endif
+                                    </ul>
+                                </div>
+                            @else
+                                <h4 class="text-uppercase">Chưa có bình luận nào về sản phẩm.</h4>
+                            @endif
+                        </div>
+                        <div class="col-md-6">
+                            @if(isset($UserLogin))
+                                <h4 class="text-uppercase">Viết bình luận</h4>
+                                <form class="review-form" method="post" action="{{url('chi-tiet-san-pham/'.$sanpham->sp_id)}}">
+                                    {{csrf_field()}}
+                                    <input type="hidden" name="id_KHBL" value="{{$Customer->kh_id}}">
+                                    <div class="form-group">
+                                        @if($errors->has('txtBinhLuan'))
+                                            <span class="text-danger">{{$errors->first('txtBinhLuan')}}</span>
+                                            <script> alert({{$errors->first('txtBinhLuan')}});</script>
+                                        @endif
+                                        <textarea class="input" name="txtBinhLuan" placeholder="Nhập bình luận.."></textarea>
+                                    </div>
+                                    <input type="submit" class="btn btn-danger" value="Gửi" style="width: 20%">
+                                </form>
+                        </div>
+                        @else
+                            <h4>
+                                Vui lòng đăng nhập để viết bình luận
+                                <button class="btn btn-danger" onclick="window.location = '{{url('user/login')}}';">Đăng nhập</button>
+                            </h4>
+                        </div>
+                    @endif
                 </div>
             </div>
             <!-- /row -->
@@ -506,7 +689,9 @@
 
 @section('script')
     <script type="text/javascript" src="{{asset('/js/dat2.js')}}"></script>
-
+@if(session('status'))
+    <script> alert("{{session('status')}}"); </script>
+@endif
     <script>
         $(document).ready(function () {
 
@@ -526,11 +711,23 @@
                     $('#error').html('');
                 }
             });
+
+            /*var pos = 0;
+            var size = $('#binhluan_size').val();
+            for(var i =1; i <= size; i++){
+                $('#page-' + i).click(function () {
+                        var pos = document.documentElement.scrollTop;
+                    });
+                if(pos != 0){
+                    document.documentElement.scrollTop = pos;
+                }
+
+            }*/
         });
     </script>
     {{--Trả về vị trí ban đầu khi nhấn nút thích--}}
     @if(session('position'))
-        <?php echo ' <script>document.documentElement.scrollTop ='.session('position').';</script>;' ?>
+        <?php echo ' <script>document.documentElement.scrollTop ='.session('position').';</script>'; ?>
     @endif
 
 @endsection

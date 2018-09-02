@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\BinhLuan;
 use App\ChiTietDonHang;
 use App\DanhMucSanPham;
 use App\DonHang;
+use App\HanhVi;
 use App\HinhAnhSanPham;
 use App\KhachHang;
 use App\KichThuoc;
@@ -117,7 +119,52 @@ class ProductController extends Controller
         //Sản phẩm thuộc loại mặt hàng gì
         $LMH = DanhMucSanPham::find($LSP->parent);
 
+        //Danh sách bình luận của các khách hàng
+        $BL  = BinhLuan::where('bl_sp_id', $SP->sp_id)->paginate(1);
+
+        //Danh sách đánh giá sản phẩm của khách hàng
+        $HV = HanhVi::where('hv_rating', '>', 0)->where('hv_sp_id', $SP->sp_id)->get();
+        $tong = 0;
+        if($HV == null) {
+            foreach ($HV as $item) {
+                $tong += $item->hv_rating;
+            }
+            $tong /= $HV->count();
+        }
+
         return view('chi-tiet-san-pham',['sanpham' => $SP, 'nhasanxuat' => $NSX,
-            'loaisanpham' => $LSP, 'loaimathang' => $LMH, 'hinhanh' => $HA, 'color' => $MAU, 'kichthuoc' => $KT]);
+            'loaisanpham' => $LSP, 'loaimathang' => $LMH, 'hinhanh' => $HA, 'color' => $MAU, 'kichthuoc' => $KT,
+            'binhluan' => $BL, 'listHanhvi' => $HV, 'tongSao' => $tong]);
     }
+
+    //Chi tiết sản phẩm
+    public function postDetail(Request $request,$id){
+        $rules = [
+            'txtBinhLuan' => 'required',
+        ];
+        $messages = [
+            'txtBinhLuan.required' => 'Nội dung bình luận không được bỏ trống',
+        ];
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if($validator->fails()){
+            return redirect()->back()->withErrors($validator)->with('status', 'Vui lòng nhập nội dung bình luận');
+        }else{
+            //Lấy thông tin sản phẩm
+            $SP = SanPham::find($id);
+            //Lấy thông tin khách hàng
+            $KH = KhachHang::find($request->input('id_KHBL'));
+
+            $binhluan = new BinhLuan();
+            $binhluan->bl_kh_id    = $KH->kh_id;
+            $binhluan->bl_sp_id    = $SP->sp_id;
+            $binhluan->bl_noi_dung = $request->txtBinhLuan;
+            $binhluan->created_at  = Carbon::now();
+            $binhluan->updated_at  = Carbon::now();
+            $binhluan->save();
+
+            return redirect()->back()->with('status', 'Cảm ơn bạn đã quan tâm đến sản phẩm');
+        }
+    }
+
 }

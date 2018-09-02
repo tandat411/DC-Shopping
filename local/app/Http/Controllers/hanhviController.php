@@ -17,4 +17,6 @@ class hanhviController extends Controller
         $hanhvi->delete();
         return redirect('admin/hanhvi/danhsach')->with('thongbao','Xóa thành công');
     }
+
+
 }
