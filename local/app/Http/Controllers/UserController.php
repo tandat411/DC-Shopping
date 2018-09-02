@@ -7,6 +7,7 @@ use App\CuocPhiVanCHuyen;
 use App\DiaChiGiaoHang;
 use App\DonHang;
 use App\EmailNhanTinKhuyenMai;
+use App\HanhVi;
 use App\HinhAnhSanPham;
 use App\LoaiThanhToan;
 use App\MauSac;
@@ -211,6 +212,86 @@ class UserController extends Controller
         }
         //return view('users.gio-hang',['data' => $listCart, 'total' => $total ]);
         return view('users.gio-hang',['data' => $listCart, 'total' => $total ]);
+    }
+//--------------------XỬ LÝ GIỎ HÀNG------------------------------------------------------------------------
+    //Trả về trang thanh toán hoặc giỏ hàng của khách hàng
+    public function postGioHang(Request $request){
+        //Xử lý sự cố khi chọn số lượng <= 0
+        $rules = [
+            'soluong'     => 'min:1'
+        ];
+
+        $messages = [
+            'soluong.min' => 'Vui lòng nhập đúng số lượng cần mua'
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if($validator->fails()){
+            return redirect()->back()->withErrors($validator);
+        }else {
+
+            //Nếu có nhấn nút tăng số lượng bên trang giỏ hàng
+            if(isset($request['up'])){
+
+                $id = $request->input('row_id');
+                $item = Cart::get($id)->toArray();
+                Cart::update($id, $item['qty']+1);
+                return redirect()->back();
+
+            }elseif(isset($request['down'])){ //Nếu có nhấn nút giảm số lượng bên trang giỏ hàng
+
+                $id = $request->input('row_id');
+                $item = Cart::get($id)->toArray();
+                Cart::update($id, $item['qty']-1);
+                return redirect()->back();
+
+            }elseif (isset($request['deleteCart'])){ //Nếu có nhấn nút xóa sản phẩm bên trang giỏ hàng
+
+                $id = $request->input('row_id');
+                Cart::remove($id);
+                return redirect()->back();
+
+            }else{
+
+                $sanpham = SanPham::find($request->input('id_SP'));
+                $khachhang = KhachHang::find($request->input('id_KH'));
+
+                $size = $request->input('sizeSelect');
+                $soluong = $request->input('soluong');
+                $color = $request->input('colorSelect');
+
+                $listHinhAnh = HinhAnhSanPham::where('hasp_sp_id', $sanpham->sp_id)->get()->toArray();
+                foreach ($listHinhAnh as $image) {
+                    $check = MauSac::where('mau_ha_id', $image['id'])->where('mau_code', $color)->first();
+                    if ($check) {
+                        $hinhanh = HinhAnhSanPham::find($image['id']);
+                        $mau = MauSac::find($check['mau_id']);
+                    }
+                }
+
+                //Nếu nút [Mua ngay] được nhấn từ trang chi tiết sản phẩm -> chuyển đến trang thanh toán
+                if (isset($request['btMuaNgay'])) {
+
+                    //Thêm vào giỏ hàng rồi chuyển sang trang thanh toán để bắt đầu đặt hàng
+                    Cart::add($sanpham->sp_id, $sanpham->sp_ten, $soluong, $sanpham->sp_gia_ban,
+                        ['size' => $size, 'color' => $mau['mau_ten'], 'img' => $hinhanh->hasp_ten, 'id_KH' => $khachhang->kh_id]);
+
+                    return redirect('user/thanh-toan');
+                }
+
+                //Nếu nút [Thêm vào giỏ hàng] được nhấn từ trang chi tiết sản phẩm -> chuyển đến trang giỏ hàng
+                if (isset($request['btThemVaoGio'])) {
+
+                    ////Thêm vào giỏ hàng rồi chuyển sang trang trang giỏ hàng.
+                    Cart::add($sanpham->sp_id, $sanpham->sp_ten, $soluong, $sanpham->sp_gia_ban,
+                        ['size' => $size, 'color' => $mau['mau_ten'], 'img' => $hinhanh->hasp_ten, 'id_KH' => $khachhang->kh_id]);
+
+                    return redirect('user/gio-hang');
+                }
+            }
+        }
+
     }
 
 //--------------------THANH TOÁN----------------------------------------------------------------------------------------
@@ -437,87 +518,6 @@ class UserController extends Controller
         }
     }
 
-//--------------------XỬ LÝ GIỎ HÀNG------------------------------------------------------------------------
-    //Trả về trang thanh toán hoặc giỏ hàng của khách hàng
-    public function postGioHang(Request $request){
-        //Xử lý sự cố khi chọn số lượng <= 0
-        $rules = [
-            'soluong'     => 'min:1'
-        ];
-
-        $messages = [
-            'soluong.min' => 'Vui lòng nhập đúng số lượng cần mua'
-        ];
-
-        $validator = Validator::make($request->all(), $rules, $messages);
-
-        if($validator->fails()){
-            return redirect()->back()->withErrors($validator);
-        }else {
-
-            //Nếu có nhấn nút tăng số lượng bên trang giỏ hàng
-            if(isset($request['up'])){
-
-                $id = $request->input('row_id');
-                $item = Cart::get($id)->toArray();
-                Cart::update($id, $item['qty']+1);
-                return redirect()->back();
-
-            }elseif(isset($request['down'])){ //Nếu có nhấn nút giảm số lượng bên trang giỏ hàng
-
-                $id = $request->input('row_id');
-                $item = Cart::get($id)->toArray();
-                Cart::update($id, $item['qty']-1);
-                return redirect()->back();
-
-            }elseif (isset($request['deleteCart'])){ //Nếu có nhấn nút xóa sản phẩm bên trang giỏ hàng
-
-                $id = $request->input('row_id');
-                Cart::remove($id);
-                return redirect()->back();
-
-            }else{
-
-                $sanpham = SanPham::find($request->input('id_SP'));
-                $khachhang = KhachHang::find($request->input('id_KH'));
-
-                $size = $request->input('sizeSelect');
-                $soluong = $request->input('soluong');
-                $color = $request->input('colorSelect');
-
-                $listHinhAnh = HinhAnhSanPham::where('hasp_sp_id', $sanpham->sp_id)->get()->toArray();
-                foreach ($listHinhAnh as $image) {
-                    $check = MauSac::where('mau_ha_id', $image['id'])->where('mau_code', $color)->first();
-                    if ($check) {
-                        $hinhanh = HinhAnhSanPham::find($image['id']);
-                        $mau = MauSac::find($check['mau_id']);
-                    }
-                }
-
-                //Nếu nút [Mua ngay] được nhấn từ trang chi tiết sản phẩm -> chuyển đến trang thanh toán
-                if (isset($request['btMuaNgay'])) {
-
-                    //Thêm vào giỏ hàng rồi chuyển sang trang thanh toán để bắt đầu đặt hàng
-                    Cart::add($sanpham->sp_id, $sanpham->sp_ten, $soluong, $sanpham->sp_gia_ban,
-                    ['size' => $size, 'color' => $mau['mau_ten'], 'img' => $hinhanh->hasp_ten, 'id_KH' => $khachhang->kh_id]);
-
-                    return redirect('user/thanh-toan');
-                }
-
-                //Nếu nút [Thêm vào giỏ hàng] được nhấn từ trang chi tiết sản phẩm -> chuyển đến trang giỏ hàng
-                if (isset($request['btThemVaoGio'])) {
-
-                    ////Thêm vào giỏ hàng rồi chuyển sang trang trang giỏ hàng.
-                    Cart::add($sanpham->sp_id, $sanpham->sp_ten, $soluong, $sanpham->sp_gia_ban,
-                    ['size' => $size, 'color' => $mau['mau_ten'], 'img' => $hinhanh->hasp_ten, 'id_KH' => $khachhang->kh_id]);
-
-                    return redirect('user/gio-hang');
-                }
-            }
-        }
-
-    }
-
 //--------------------THÔNG TIN KHÁCH HÀNG------------------------------------------------------------------------------
     public function getInfo(){
         //check mail người dùng đã đăng nhập để lấy thông tin khách hàng
@@ -598,6 +598,7 @@ class UserController extends Controller
             return redirect('user/thong-tin-khach-hang');
         }
     }
+
 //--------------------KHÁCH HÀNG SỬA ĐỊA CHỈ---------------------------------------------------------------------------
     public function getSuaDiaChi($id_DC){
 
@@ -617,6 +618,59 @@ class UserController extends Controller
         return view('users.them-dia-chi', ['thanhpho' => $listThanhPho, 'quanhuyen'=> $quanhuyen,
             'phuongxa' => $phuongxa , 'diachi' => $diachi]);
     }
+
+//--------------------KHÁCH HÀNG RATING---------------------------------------------------------------------------------
+    public function getHanhVi(){
+        return redirect()->back();
+    }
+    public function postHanhVi(Request $request){
+        $id_kh = $request->id_KH;
+        $id_sp = $request->id_SP;
+
+        $hanhvi = HanhVi::where('hv_kh_id', $id_kh)->where('hv_sp_id',$id_sp)->first();
+
+        if(isset($request['bt_1_Sao'])){
+            $hanhvi->hv_rating  = 1;
+            $hanhvi->updated_at = Carbon::now();
+            $hanhvi->save();
+
+            $request->session()->flash('status', 'Cảm ơn bạn đã đánh giá.');
+            return redirect()->back();
+        }
+        if(isset($request['bt_2_Sao'])){
+            $hanhvi->hv_rating  = 2;
+            $hanhvi->updated_at = Carbon::now();
+            $hanhvi->save();
+
+            $request->session()->flash('status', 'Cảm ơn bạn đã đánh giá.');
+            return redirect()->back();
+        }
+        if(isset($request['bt_3_Sao'])){
+            $hanhvi->hv_rating  = 3;
+            $hanhvi->updated_at = Carbon::now();
+            $hanhvi->save();
+
+            $request->session()->flash('status', 'Cảm ơn bạn đã đánh giá.');
+            return redirect()->back();
+        }
+        if(isset($request['bt_4_Sao'])){
+            $hanhvi->hv_rating  = 4;
+            $hanhvi->updated_at = Carbon::now();
+            $hanhvi->save();
+
+            $request->session()->flash('status', 'Cảm ơn bạn đã đánh giá.');
+            return redirect()->back();
+        }
+        if(isset($request['bt_5_Sao'])){
+            $hanhvi->hv_rating  = 5;
+            $hanhvi->updated_at = Carbon::now();
+            $hanhvi->save();
+
+            $request->session()->flash('status', 'Cảm ơn bạn đã đánh giá.');
+            return redirect()->back();
+        }
+    }
+
 //--------------------PHẦN ADMIN----------------------------------------------------------------------------------------
     public function getdangnhapAdmin(){
         return view('admin.login');

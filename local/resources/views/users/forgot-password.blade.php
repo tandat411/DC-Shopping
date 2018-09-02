@@ -30,7 +30,15 @@
         <div class="container" style="width: 50%">
             <!-- row -->
             <div class="row">
-                <form method="post" action="" class="form-control" style="height: 100%">
+                @if(count($errors)>0)
+                    <div class="alert alert-danger">
+                        @foreach($errors->all() as $err)
+                            {{$err}}<br>
+                        @endforeach
+                    </div>
+                @endif
+                <form method="post" action="{{url('user/forgot-password')}}" class="form-control" style="height: 100%">
+                    {{csrf_field()}}
                     <div class="col-md-12">
                         <legend class="text-center">
                             <h3  style="color: #D50000; margin: 10px;">Quên mật khẩu?</h3>
@@ -74,6 +82,9 @@
 
 @section('script')
     <script type="text/javascript" src="{{asset('/js/dat2.js')}}"></script>
+    @if(session('status'))
+        <script> alert("{{session('status')}}");</script>
+    @endif
 @endsection
 
 @section('footer')

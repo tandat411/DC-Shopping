@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\BinhLuan;
 use App\CuocPhiVanCHuyen;
 use App\DanhMucSanPham;
 use App\DiaChiGiaoHang;
@@ -130,6 +131,11 @@ class AjaxController extends Controller
 
         return ['tp'=> $thanhpho->tp_ten ,'numberCuocPhi' => $cuocphi[0]->cpvc_gia_cuoc, 'strCuocPhi' => $strCuocPhi,
             'strTotal' => $strTotal, 'numberTotal' => $total];
+    }
+    //Xuất thông tin cước phí của địa chỉ giao hàng đã nhập
+    public function getBinhLuan($position){
+
+        echo "href='".url($binhluan->url($page))."'";
     }
 
 }

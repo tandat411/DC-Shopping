@@ -27,6 +27,7 @@ Route::group(['middleware' => 'userLogin'], function (){
     /*----------------------------------------------------------------------------------------------------------------------*/
     //Trang chi tiết sản phẩm
     Route::get('chi-tiet-san-pham/{id}', 'ProductController@getDetail');
+    Route::post('chi-tiet-san-pham/{id}', 'ProductController@postDetail');
 
     /*----------------------------------------------------------------------------------------------------------------------*/
     //Trang tin tức
@@ -62,6 +63,9 @@ Route::group(['middleware' => 'userLogin'], function (){
             Route::get('thanh-toan', 'UserController@getThanhToan');
             Route::post('thanh-toan', 'UserController@postThanhToan');
 
+            //Đánh giá sản phẩm
+            Route::get('hanh-vi', 'UserController@getHanhVi');
+            Route::post('hanh-vi', 'UserController@postHanhVi');
 
             //Giỏ hàng
             Route::get('gio-hang', 'UserController@getGioHang');
@@ -382,5 +386,6 @@ Route::group(['prefix' => 'ajax'], function (){
     Route::get('gia-ban-thue/{thue_id}/{km_id}/{gia_ban}', 'AjaxController@getGiaBanThue');
     Route::get('gia-ban-khuyen-mai/{thue_id}/{km_id}/{gia_ban}', 'AjaxController@getGiaBanKhuyenMai');
     Route::get('cuoc-phi/{dcgh_id}/{total}', 'AjaxController@getCuocPhi');
+    Route::get('binh-luan/{position}', 'AjaxController@getBinhLuan');
 
 });

@@ -187,4 +187,26 @@ input[type=number].spin-off::-webkit-outer-spin-button {
 option[disabled]{
     display: none;
 }
+
+.rating{
+    position: relative;
+    margin: auto 15px;
+    width:50%;
+    background-color: #B8B8B8;
+    border-radius: 3px;
+    height: 8px;
+}
+.rating-percent{
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    background-color: #FFB656;
+    border-radius: 3px;
+}
+.set-rating{
+    background: transparent;
+    border-radius: 100%;
+}
+
 /*-----------------------------------------------------------------------------------------------------*/
