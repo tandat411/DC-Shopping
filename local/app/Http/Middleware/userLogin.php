@@ -17,7 +17,8 @@ class userLogin
     public function handle($request, Closure $next)
     {
         if(Auth::check()){
-            if(Auth::user()->nd_lnd_id != 2){
+            $user = Auth::user();
+            if($user->nd_lnd_id == 1){
                 Auth::logout();
                 //return $next($request);
                 return redirect()->back()->withErrors('Tên tài khoản hoặc mật khẩu không chính xác');
