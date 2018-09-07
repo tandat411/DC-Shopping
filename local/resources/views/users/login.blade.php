@@ -36,13 +36,6 @@
                         <legend class="text-center">
                             <h3  style="color: #D50000; margin: 10px;">Chào mừng bạn đến với DC-Shopping</h3>
                         </legend>
-                        @if(count($errors)>0)
-                            <span class="text-danger">
-                        @foreach($errors->all() as $err)
-                                    {{$err}}<br>
-                        @endforeach
-                            </span>
-                        @endif
                         @if($errors->has('errorLoginUser'))
                             <span class="text-danger">{{$errors->first('errorLoginUser')}}</span>
                         @endif
@@ -109,7 +102,14 @@
                     {{--Đăng nhập bằng Facebook và Gmail: về sau làm--}}
                     <div class="text-center">
                         <label style="margin-top: 10px">
-                            Hoặc đăng nhập với..
+                            Hoặc đăng nhập với..<br>
+                            <a href="{{url('redirect/facebook')}}" class="btn" style="background: #4267b2; color: white">
+                                <i class="fa fa-facebook-square" style="margin-right: 10px"></i><b>Đăng nhập với Facebook</b>
+                            </a>
+                            hay
+                            <a href="{{url('redirect/google')}}" class="btn" style="background: #db4437; color: white">
+                                <i class="fa fa-google" style="margin-right: 10px"></i><b>Đăng nhập với Google</b>
+                            </a>
                         </label>
                     </div>
                 </form>

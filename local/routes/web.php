@@ -16,6 +16,9 @@ Route::group(['middleware' => 'userLogin'], function (){
     //Trang chủ
     Route::get('/', 'Controller@getHome');
 
+    Route::get('redirect/{social}', 'Auth\SocialController@redirect');
+    Route::get('callback/{social}', 'Auth\SocialController@callback');
+
     /*----------------------------------------------------------------------------------------------------------------------*/
     //Trang sản phẩm
     Route::get('muc-san-pham/{id}', 'ProductController@getPage');

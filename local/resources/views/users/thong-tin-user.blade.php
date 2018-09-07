@@ -41,6 +41,8 @@
                 <div class="col-md-9">
                 <form method="post" action="{{url('user/thong-tin-khach-hang')}}" id="checkout-form" class="clearfix col-md-6">
                     {{--Thông tin người nhận hàng--}}
+                    {{csrf_field()}}
+                    <input type="hidden" name="id_KH" value="{{$khachhang['kh_id']}}">
                     <div class="col-md-12">
                         <div class="billing-details">
                             <div class="section-title">
@@ -49,17 +51,29 @@
                             <div class="form-group">
                                 <label>Họ và tên:</label>
                                 <input class="input" type="text" name="txtHoTenTT" value="{{$khachhang['kh_ten']}}" placeholder="Họ và tên...">
+                                @if($errors->has('txtHoTenTT'))
+                                    <span class="text-danger">{{$errors->first('txtHoTenTT')}}</span>
+                                @endif
                             </div>
                             <div class="form-group">
                                 <label>Email:</label>
                                 <input class="input" type="email" name="txtEmailTT" value="{{$khachhang['kh_email']}}" placeholder="Email...">
+                                @if($errors->has('txtEmailTT'))
+                                    <span class="text-danger">{{$errors->first('txtEmailTT')}}</span>
+                                @endif
+                                @if($errors->has('existEmail'))
+                                    <span class="text-danger">{{$errors->first('existEmail')}}</span>
+                                @endif
                             </div>
                             <div class="form-group">
                                 <label>Số điện thoại:</label>
                                 <input class="input" type="tel" name="txtPhoneTT" value="{{$khachhang['kh_sdt']}}" placeholder="Telephone...">
+                                @if($errors->has('txtPhoneTT'))
+                                    <span class="text-danger">{{$errors->first('txtPhoneTT')}}</span>
+                                @endif
                             </div>
                         </div>
-                        <button class="btn" onclick="window.location = '{{url('/')}}' " style="background: #D50000; color: white;">
+                        <button class="btn" name="btUpdate" style="background: #D50000; color: white;">
                             <i class="fa fa-edit"></i> CẬP NHẬT
                         </button>
                     </div>
@@ -81,13 +95,23 @@
                                 <tr>
                                     <td>{{$i}}</td>
                                     <td>
-                                        {{$row['dcgh_dia_chi'].', '.$row['dcgh_phuong_xa'].' - '.$row['dcgh_quan_huyen'].' - '.$row['dcgh_thanh_pho']}}
+                                        {{$row['dcgh_dia_chi'].', '.\App\PhuongXa::find($row['dcgh_phuong_xa'])->px_ten.' - '.\App\QuanHuyen::find($row['dcgh_quan_huyen'])->qh_ten.' - '.\App\ThanhPho::find($row['dcgh_thanh_pho'])->tp_ten}}
                                     </td>
                                     <td title="Chỉnh sửa">
-                                        {{--Nút sửa đại chỉ--}}
+                                        {{--Nút sửa địa chỉ--}}
                                         <button class="main-btn icon-btn" onclick="window.location = '{{url('/user/sua-dia-chi/'.$row['dcgh_id'])}}' ">
                                             <i class="fa fa-pencil"></i>
                                         </button>
+                                    </td>
+                                    <td title="Chỉnh sửa">
+                                        <form method="post" action="{{url('user/thong-tin-khach-hang')}}" id="checkout-form" class="clearfix col-md-6">
+                                            {{csrf_field()}}
+                                        {{--Nút xóa địa chỉ--}}
+                                        <input type="hidden" name="id_DCGH" value="{{$row['dcgh_id']}}">
+                                        <button class="main-btn icon-btn" name="xoaDiaChi">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                        </form>
                                     </td>
                                 </tr>
                                 <?php $i++; ?>

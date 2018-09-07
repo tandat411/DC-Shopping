@@ -99,8 +99,9 @@ class UserController extends Controller
             $accept = $request->has('cbAccept')? true: false;
 
             //Kiểm tra email đã tồn tại hay chưa
-            $check = NguoiDung::where('email', $email)->count();
-            if($check > 0){
+            $checkAccount = NguoiDung::where('email', $email)->count();
+            $checkCustomer= KhachHang::where('kh_email', $email)->count();
+            if($checkAccount > 0 || $checkCustomer > 0){
                 return redirect()->back()->with('existEmail', 'Email này đã tồn tại..');
             }else{
                 //Kiểm tra mật khẩu xác nhận
@@ -178,8 +179,6 @@ class UserController extends Controller
 
             //Kiểm tra có check "Duy trì đăng nhập" hay ko nếu có là true
             $remember = $request->has('cbRemember')? true: false;
-
-            $nguoidung = NguoiDung::where('email', $data['email'])->first();
 
             if (Auth::attempt($data, $remember)) {
                 return redirect(session('backURL'));
@@ -527,12 +526,56 @@ class UserController extends Controller
         return view('users.thong-tin-user',['khachhang' => $khachhang, 'diachi' => $diachi]);
     }
 
-    public function postInfo(){
-        //check mail người dùng đã đăng nhập để lấy thông tin khách hàng
-        $khachhang = KhachHang::where('kh_email', Auth::user()->email)->first();
-        //Lấy danh sách địa chỉ giao hàng của khách hàng
-        $diachi = DiaChiGiaoHang::where('dcgh_kh_id', $khachhang['kh_id'])->get()->toArray();
-        return view('users.thong-tin-user',['khachhang' => $khachhang, 'diachi' => $diachi]);
+    public function postInfo(Request $request){
+        if(isset($request['xoaDiaChi'])){
+            $diachi = DiaChiGiaoHang::find($request->id_DCGH);
+            $diachi->delete();
+            return redirect()->back();
+        }else {
+            $rules = [
+                'txtHoTenTT' => 'required',
+                'txtEmailTT' => 'required',
+                'txtPhoneTT' => 'required',
+            ];
+            $messages = [
+                'txtHoTenTT.required' => 'Vui lòng nhập tên khách hàng',
+                'txtEmailTT.required' => 'Vui lòng nhập email khách hàng',
+                'txtPhoneTT.required' => 'Vui lòng nhập số điện thoại khách hàng',
+            ];
+            $vali = Validator::make($request->all(), $rules, $messages);
+
+            if ($vali->fails()) {
+                return redirect()->back()->withErrors($vali);
+            } else {
+
+                $khachhang = KhachHang::find($request->id_KH);
+
+                $ten = $request->txtHoTenTT;
+                $email = $request->txtEmailTT;
+                $sdt = $request->txtPhoneTT;
+
+                if ($khachhang->kh_email == $email) {
+                    $khachhang->kh_ten = $ten;
+                    $khachhang->kh_sdt = $sdt;
+                    $khachhang->save();
+
+                    return redirect('user/thong-tin-khach-hang');
+                } else {
+                    $find = KhachHang::where('kh_email', $email)->count();
+                    if ($find > 0) {
+                        $errors = new MessageBag(['existEmail' => 'Email này đã được đăng ký']);
+                        return redirect()->back()->withErrors($errors);
+                    } else {
+                        $khachhang->kh_ten = $ten;
+                        $khachhang->kh_email = $email;
+                        $khachhang->kh_sdt = $sdt;
+                        $khachhang->save();
+
+                        return redirect('user/thong-tin-khach-hang');
+                    }
+                }
+            }
+        }
     }
 
 //--------------------KHÁCH HÀNG THÊM/ SỬA ĐỊA CHỈ---------------------------------------------------------------------------
@@ -580,18 +623,18 @@ class UserController extends Controller
                 $item = new DiaChiGiaoHang();
                 $item->dcgh_kh_id      = $id;
                 $item->dcgh_dia_chi    = $dc;
-                $item->dcgh_phuong_xa  = $px->px_ten;
-                $item->dcgh_quan_huyen = $qh->qh_ten;
-                $item->dcgh_thanh_pho  = $tp->tp_ten;
+                $item->dcgh_phuong_xa  = $px->px_id;
+                $item->dcgh_quan_huyen = $qh->qh_id;
+                $item->dcgh_thanh_pho  = $tp->tp_id;
                 $item->save();
             }
             if(isset($request['btSuaDiaChi'])){
                 $item = DiaChiGiaoHang::find($request->input('id_DC'));
                 $item->dcgh_kh_id      = $id;
                 $item->dcgh_dia_chi    = $dc;
-                $item->dcgh_phuong_xa  = $px->px_ten;
-                $item->dcgh_quan_huyen = $qh->qh_ten;
-                $item->dcgh_thanh_pho  = $tp->tp_ten;
+                $item->dcgh_phuong_xa  = $px->px_id;
+                $item->dcgh_quan_huyen = $qh->qh_id;
+                $item->dcgh_thanh_pho  = $tp->tp_id;
                 $item->save();
             }
 
@@ -603,20 +646,18 @@ class UserController extends Controller
     public function getSuaDiaChi($id_DC){
 
         //Lấy thông tin địa chỉ của khách hàng
-        $diachi = DiaChiGiaoHang::find($id_DC)->first();
-
-        $listThanhPho = ThanhPho::all()->toArray();
+        $diachi = DiaChiGiaoHang::where('dcgh_id',$id_DC)->first();
 
         //Lấy thông tin thành phố-quận/huyện - phường/xã cũ của khách hàng
-        $thanhpho = ThanhPho::where('tp_ten', $diachi['dcgh_thanh_pho'])->first();
+        $thanhPho = ThanhPho::all();
 
-        $quanhuyen = QuanHuyen::where('qh_tp_id', $thanhpho['tp_id'])->get()->toArray();
+        $quanhuyen = QuanHuyen::where('qh_tp_id', $diachi->dcgh_thanh_pho)->get();
 
-        $phuongxa = PhuongXa::where('px_qh_id', $quanhuyen[0]['qh_id'])->get()->toArray();
+        $phuongxa = PhuongXa::where('px_qh_id', $diachi->dcgh_quan_huyen)->get();
 
-
-        return view('users.them-dia-chi', ['thanhpho' => $listThanhPho, 'quanhuyen'=> $quanhuyen,
+        return view('users.them-dia-chi', ['thanhpho' => $thanhPho, 'quanhuyen'=> $quanhuyen,
             'phuongxa' => $phuongxa , 'diachi' => $diachi]);
+
     }
 
 //--------------------KHÁCH HÀNG RATING---------------------------------------------------------------------------------
