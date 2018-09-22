@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
-    //Trang danh mục sản phẩm
+//-------------------------------------------TRANG DANH MỤC SẢN PHẨM----------------------------------------------------
     public function getPage($id){
         switch ($id){
             case 'danh-sach-yeu-thich':
@@ -45,6 +45,18 @@ class ProductController extends Controller
                 return view('san-pham-khuyen-mai', ['listSP' => $DSSP, 'danhmuc' => 'Sản phẩm khuyến mãi',
                                                         'listKM' => $LKM]);
                 break;
+            case 'san-pham-moi':
+
+                $sanpham = SanPham::where('trang_thai', 'ON')->get()->toArray();
+                $DSSP = array();
+                $now = Carbon::now();
+                foreach ($sanpham as $item){
+                    if($now->diffInDays($item['created_at']) <= 30){
+                        $DSSP[] = $item;
+                    }
+                }
+                return view('san-pham', ['listSP' => $DSSP, 'danhmuc' => 'Sản phẩm mới']);
+                break;
             case $id:
                 $danhmuc = DanhMucSanPham::find($id);
                 $DSSP = SanPham::where('sp_danh_muc_id', $danhmuc->dmsp_id)->where('trang_thai', 'ON')->get()->toArray();
@@ -53,7 +65,15 @@ class ProductController extends Controller
         }
     }
 
-    // Thêm/ xóa sản phẩm yêu thích
+//-----------------------------------------TRANG SẢN PHẨM THEO NHÀ SẢN XUẤT---------------------------------------------
+    public function getNSX($id){
+        $NSX     = SanPham::find($id);
+        $sanpham = SanPham::where('sp_nsx_id', $id)->get();
+
+        return view('san-pham', ['listSP' => $sanpham, 'danhmuc' => 'Thương hiệu '.$NSX->nsx_ten]);
+    }
+
+//-----------------------------------------THÊM/ XÓA SẢN PHẨM YÊU THÍCH-------------------------------------------------
     public function getLove($product_id, $customer_id, $position){
 
         //Lấy thông tin tài khoản người dùng và sản phẩm
@@ -80,7 +100,7 @@ class ProductController extends Controller
         return redirect()->back()->with('position', $position);
     }
 
-    //Chi tiết sản phẩm
+//-----------------------------------------CHI TIẾT SẢN PHẢM------------------------------------------------------------
     public function getDetail($id){
         //Lấy sản phẩm
         $SP = SanPham::find($id);
@@ -167,4 +187,15 @@ class ProductController extends Controller
         }
     }
 
+//-----------------------------------------TÌM KIẾM SẢN PHẨM------------------------------------------------------------
+    public function postSearch(Request $request){
+        $this->validate($request, [
+            'txtSearch' => 'required'], [
+            'txtSearch.required' => 'Vui lòng nhập nội dung cần tìm..'
+        ]);
+
+        $noidung = $request->txtSearch;
+        $sanpham = SanPham::where('sp_ten', 'LIKE', '%'.$request->txtSearch.'%')->get();
+        return view('san-pham', ['listSP' => $sanpham, 'danhmuc' => $noidung]);
+    }
 }

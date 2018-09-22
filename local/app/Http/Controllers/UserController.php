@@ -189,6 +189,36 @@ class UserController extends Controller
 
         }
     }
+
+//--------------------THAY ĐỔI MẬT KHẨU---------------------------------------------------------------------------------
+    public function getChangePasswordUser($id){
+        $nguoidung = NguoiDung::find($id);
+        return view('users.thay-doi-mat-khau',['nguoidung'=> $nguoidung]);
+    }
+    public function postChangePasswordUser(Request $request,$id){
+        //Qui định luật lệ khi đăng ký
+        $nguoidung = NguoiDung::find($id);
+        $this->validate($request,[
+            'password'                    =>'required',
+            'ConfirmPassword'             =>'required',
+        ],
+            [
+                'password.required'       =>'Bạn chưa nhập mật khẩu',
+                'ConfirmPassword.required'=>'Bạn chưa xác nhận lại mật khẩu',
+            ]);
+        $pass = $request->input('password');
+        $passConfirm = $request->input('ConfirmPassword');
+        if($pass != $passConfirm)
+        {
+            return redirect()->back()->with('thongbao', 'Mật khẩu xác nhận không chính xác..');
+        }else {
+            $nguoidung->name     = $request->name;
+            $nguoidung->email    = $request->email;
+            $nguoidung->password = bcrypt($request->password);
+            $nguoidung->save();
+            return redirect('user/change-password/'.$id)->with('thongbao','Thay đổi mật khẩu thành công');
+        }
+    }
 //--------------------GIỎ HÀNG------------------------------------------------------------------------------------------
 
     //Trang giỏ hàng của khách hàng

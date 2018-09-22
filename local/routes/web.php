@@ -16,12 +16,17 @@ Route::group(['middleware' => 'userLogin'], function (){
     //Trang chủ
     Route::get('/', 'Controller@getHome');
 
+    //Tìm kiếm sản phẩm
+    Route::post('tim-kiem', 'ProductController@postSearch');
+
     Route::get('redirect/{social}', 'Auth\SocialController@redirect');
     Route::get('callback/{social}', 'Auth\SocialController@callback');
 
     /*----------------------------------------------------------------------------------------------------------------------*/
     //Trang sản phẩm
     Route::get('muc-san-pham/{id}', 'ProductController@getPage');
+    //Trang sản theo nhà sản xuất
+    Route::get('nha-san-xuat/{id}', 'ProductController@getNSX');
 
     /*----------------------------------------------------------------------------------------------------------------------*/
     //Trang sản phẩm yêu thích
@@ -47,9 +52,9 @@ Route::group(['middleware' => 'userLogin'], function (){
 
     /*----------------------------------------------------------------------------------------------------------------------*/
     //Các trang tương tác của khách hàng
-    Route::group(['prefix' => 'user'], function (){
+    Route::group(['prefix' => 'user'], function () {
         //Khi vào các trang này phải qua đăng nhập của khách hàng
-        Route::group(['middleware' => 'auth'], function (){
+        Route::group(['middleware' => 'auth'], function () {
 
             //Thông tin khách hàng
             Route::get('thong-tin-khach-hang', 'UserController@getInfo');
@@ -75,18 +80,24 @@ Route::group(['middleware' => 'userLogin'], function (){
             Route::post('gio-hang', 'UserController@postGioHang');
         });
 
-        Route::get('login',['as' => 'login', 'uses' => 'UserController@getLoginUser']);
+        //Đăng nhập
+        Route::get('login', ['as' => 'login', 'uses' => 'UserController@getLoginUser']);
         Route::post('login', 'UserController@postLoginUser');
 
+        //Đăng xuất
         Route::get('logout', 'UserController@getLogoutUser');
 
+        //Đăng ký tài khoản
         Route::get('register', 'UserController@getRegisterUser');
         Route::post('register', 'UserController@postRegisterUser');
 
+        //Quên mật khẩu
         Route::get('forgot-password', 'UserController@getForgotPasswordUser');
         Route::post('forgot-password', 'UserController@postForgotPasswordUser');
 
-
+        //Thay đổi mật khẩu
+        Route::get('change-password/{nd_id}', 'UserController@getChangePasswordUser');
+        Route::post('change-password/{nd_id}', 'UserController@postChangePasswordUser');
     });
 });
 
