@@ -222,50 +222,44 @@
                         <!-- row -->
                         <div class="row">
                         @foreach($listSP as $row)
+                            <?php
+                            //Lấy hình ảnh đầu tiên trong list hình ảnh của sản phẩm
+                            $image = \App\HinhAnhSanPham::where('hasp_sp_id', $row['sp_id'])->first();
+
+                            //Lấy ngày hiện tại
+                            $now = \Carbon\Carbon::now('Asia/Ho_Chi_Minh');
+
+                            //So sánh ngày hiện tại cách ngày bán sản phẩm là bao nhiêu ngày
+                            $checkDay = $now->diffInDays($row['created_at']);
+
+                            //Tim xem sản phẩm này có nằm trong loại sản phẩm khuyến mãi hay không
+                            $khuyenmai = \App\LoaiKhuyenMai::find($row['sp_khuyen_mai_id']);
+
+
+                            //Ngày bắt đầu và ngày kết thúc khuyến mãi
+                            $end = Carbon\Carbon::parse($khuyenmai['km_ngay_ket_thuc']);
+                            $start = \Carbon\Carbon::parse($khuyenmai['km_ngay_bat_dau']);
+
+                            $ngay = $now->diffInDays($end);
+                            $gio =  $end->hour - $now->hour;
+                            $phut = $end->minute - $now->minute;
+                            $giay = $end->second - $now->second;
+
+                            //Biến checkKM để kiểm tra ngày hiện tại có nằm trong ngày bắt đầu và
+                            //ngày kết thúc khuyến mãi hay không
+                            $checkKM = $now->between($start, $end);
+                            ?>
                             <!-- Product Single -->
                             <div class="col-md-4 col-sm-6 col-xs-6">
                                 <div class="product product-single text-center" title="{{$row['sp_ten']}}">
                                     <div class="product-thumb">
                                         {{--Phần sản phẩm mới / khuyến mãi--}}
                                         <div class="product-label">
-                                            <?php
-
-                                                //Lấy hình ảnh đầu tiên trong list hình ảnh của sản phẩm
-                                                $image = \App\HinhAnhSanPham::where('hasp_sp_id', $row['sp_id'])->first();
-
-                                                //Lấy ngày hiện tại
-                                                $now = \Carbon\Carbon::now('Asia/Ho_Chi_Minh');
-
-                                                //So sánh ngày hiện tại cách ngày bán sản phẩm là bao nhiêu ngày
-                                                $checkDay = $now->diffInDays($row['created_at']);
-
-                                                //Lấy loại thuế của sản phẩm
-                                                $mucthue = \App\MucThue::find($row['sp_muc_thue_id']);
-
-                                                //Tim xem sản phẩm này có nằm trong loại sản phẩm khuyến mãi hay không
-                                                $khuyenmai = \App\LoaiKhuyenMai::find($row['sp_khuyen_mai_id']);
-
-
-                                                //Ngày bắt đầu và ngày kết thúc khuyến mãi
-                                                $end = Carbon\Carbon::parse($khuyenmai['km_ngay_ket_thuc']);
-                                                $start = \Carbon\Carbon::parse($khuyenmai['km_ngay_bat_dau']);
-
-                                                $ngay = $now->diffInDays($end);
-                                                $gio =  $end->hour - $now->hour;
-                                                $phut = $end->minute - $now->minute;
-                                                $giay = $end->second - $now->second;
-
-                                                //Biến checkKM để kiểm tra ngày hiện tại có nằm trong ngày bắt đầu và
-                                                //ngày kết thúc khuyến mãi hay không
-                                                $checkKM = $now->between($start, $end);
-
-                                            ?>
                                         {{--Nếu ngày bắt đầu bán sản phẩm < 30 ngày thì được xem là sản phẩm mới--}}
                                         @if($checkDay <= 30)
                                         <span>New</span>
                                         @endif
                                         @if($khuyenmai->km_id != 2 && $checkKM == true)
-
                                             <span class="sale">-{{$khuyenmai->km_gia}}%</span>
                                         </div>
                                         <ul class="product-countdown">

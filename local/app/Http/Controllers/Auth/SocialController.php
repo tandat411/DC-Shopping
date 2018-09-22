@@ -12,40 +12,41 @@ use Laravel\Socialite\Facades\Socialite;
 
 class SocialController extends Controller
 {
-    public function redirect($social){
+    public function redirect($social)
+    {
         return Socialite::driver($social)->redirect();
     }
 
-    public function callback($social){
-        if(!isset($_GET['error'])) {
-            $user                      = Socialite::driver($social)->stateless()->user();
+    public function callback($social)
+    {
+        if (!isset($_GET['error'])) {
+            $user                       = Socialite::driver($social)->stateless()->user();
+            $nguoi_dung                 = NguoiDung::where('email', $user->email)->first();
+            $loai_nguoi_dung            = LoaiNguoiDung::where('lnd_ten', $social)->first();
 
-            $nguoidung                 = NguoiDung::where('email', $user->email)->first();
-            $loainguoidung             = LoaiNguoiDung::where('lnd_ten', $social)->first();
+            if(!$nguoi_dung){
+                $nguoi_dung             = new NguoiDung();
+                $nguoi_dung->nd_lnd_id  = $loai_nguoi_dung->lnd_id;
+                $nguoi_dung->name       = $user->name;
+                $nguoi_dung->email      = $user->email;
+                $nguoi_dung->password   = bcrypt("");
+                $nguoi_dung->created_at = Carbon::now();
+                $nguoi_dung->updated_at = Carbon::now();
+                $nguoi_dung->save();
 
-            if(!$nguoidung){
-                $nguoidung             = new NguoiDung();
-                $nguoidung->nd_lnd_id  = $loainguoidung->lnd_id;
-                $nguoidung->name       = $user->name;
-                $nguoidung->email      = $user->email;
-                $nguoidung->password   = bcrypt("");
-                $nguoidung->created_at = Carbon::now();
-                $nguoidung->updated_at = Carbon::now();
-                $nguoidung->save();
-
-                $item                  = new KhachHang();
-                $item->kh_ten          = $user->name;
-                $item->kh_email        = $user->email;
-                $item->kh_ngay_sinh    = "";
-                $item->kh_gioi_tinh    = "";
-                $item->kh_sdt          = "";
-                $item->created_at      = Carbon::now();
-                $item->updated_at      = Carbon::now();
+                $item                   = new KhachHang();
+                $item->kh_ten           = $user->name;
+                $item->kh_email         = $user->email;
+                $item->kh_ngay_sinh     = "";
+                $item->kh_gioi_tinh     = "";
+                $item->kh_sdt           = "";
+                $item->created_at       = Carbon::now();
+                $item->updated_at       = Carbon::now();
                 $item->save();
 
-                Auth::login($nguoidung);
+                Auth::login($nguoi_dung);
             }else{
-                Auth::login($nguoidung);
+                Auth::login($nguoi_dung);
             }
 
             return redirect('/');

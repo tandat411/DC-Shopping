@@ -11,12 +11,14 @@ class CuocPhiVanCHuyen extends Model
     public $timestamps = false;
 
     //1 loại cước phí sẽ áp dụng nhiều đơn hàng
-    public function donhang(){
+    public function donhang()
+    {
         return $this->hasMany("App/DonHang");
     }
 
     //1 cước phí vận chuyển chỉ dành cho 1 thành phố
-    public function thanhpho(){
+    public function thanhpho()
+    {
         return $this->belongsTo("App/ThanhPho");
     }
 }

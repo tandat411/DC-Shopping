@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\ChiTietDonHang;
+use App\LoaiKhuyenMai;
 use App\NguoiDung;
+use App\NhaSanXuat;
+use App\SanPham;
 use Carbon\Carbon;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Http\Request;
@@ -18,7 +22,27 @@ class Controller extends BaseController
 
     //Trang chủ
     public function getHome(){
-        return view('index');
+
+        $sanpham = SanPham::where('trang_thai', 'ON')->get();
+        $sanphamkhuyenmai = SanPham::where('sp_khuyen_mai_id', '<>', 2)->where('trang_thai', 'ON')->get()->toArray();
+        $loaikhuyenmai = LoaiKhuyenMai::where('km_id', '<>', 2)->where('trang_thai', 'ON')->get()->toArray();
+        $nsx = NhaSanXuat::where('trang_thai', 'ON')->get();
+
+        $sanphambanchay = array();
+        $sanphammoi = array();
+        $now = Carbon::now();
+        foreach ($sanpham as $item){
+            if(ChiTietDonHang::where('ctdh_sp_id', $item->sp_id)->get()){
+                $sanphambanchay[] = $item;
+            }
+            if($now->diffInDays($item['created_at']) <= 30){
+                $sanphammoi[] = $item;
+            }
+        }
+
+        return view('index', ['sanpham' => $sanpham, 'loaikhuyenmai' => $loaikhuyenmai,
+            'sanphamkhuyenmai' => $sanphamkhuyenmai, 'sanphambanchay' => $sanphambanchay,
+            'sanphammoi' => $sanphammoi, 'nhasanxuat' => $nsx]);
     }
 
     //Trang tin tức
